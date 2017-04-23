@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6E12A1AB-D0D3-4044-A547-E28DC5807DD3}</ProjectGuid>
+    <ProjectGuid>{96E6F4FD-3D13-4B2D-91BB-38DCCAA26B1C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TriggeredAnimation</RootNamespace>
-    <AssemblyName>TriggeredAnimation</AssemblyName>
+    <RootNamespace>WindowsAnimation</RootNamespace>
+    <AssemblyName>WindowsAnimation</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>

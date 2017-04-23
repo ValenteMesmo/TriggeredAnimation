@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TriggeredAnimation")]
-[assembly: AssemblyProduct("TriggeredAnimation")]
+[assembly: AssemblyTitle("WindowsAnimation")]
+[assembly: AssemblyProduct("WindowsAnimation")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f9993d03-8c86-493f-8e5e-938c67969598")]
+[assembly: Guid("30749c63-a982-4466-a9b7-349961792cc5")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,6 +1,7 @@
 ﻿using System;
+using TriggeredAnimation;
 
-namespace TriggeredAnimation
+namespace WindowsAnimation
 {
 #if WINDOWS || LINUX
     /// <summary>

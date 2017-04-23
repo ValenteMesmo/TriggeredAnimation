@@ -10,7 +10,7 @@ namespace TriggeredAnimation
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        TextureAnimation IdleAnimation { get; set; }
+        //TextureAnimation IdleAnimation { get; set; }
 
         public Game1()
         {
@@ -19,6 +19,9 @@ namespace TriggeredAnimation
         }
 
         AudioService AudioService;
+        private Texture2D eyesSprite;
+        private Cartolina_Idle_mouth Cartolina_mouth;
+        private Cartolina_Idle_Body Cartolina_Body;
 
         protected override void Initialize()
         {
@@ -29,8 +32,10 @@ namespace TriggeredAnimation
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            eyesSprite = Content.Load<Texture2D>("eyes");
 
-            IdleAnimation = new Cartolina_Idle_Body(Content);
+            Cartolina_mouth = new Cartolina_Idle_mouth(Content);
+            Cartolina_Body = new Cartolina_Idle_Body(Content);
         }
 
         protected override void UnloadContent()
@@ -41,7 +46,9 @@ namespace TriggeredAnimation
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            IdleAnimation.Update();
+            Cartolina_Body.Update();
+            if (AudioService.Current > 0f)
+                Cartolina_mouth.Update();
             base.Update(gameTime);
         }
 
@@ -71,9 +78,10 @@ namespace TriggeredAnimation
             //   new Rectangle(x,y , width, height),
             //   Color.Red);
 
-            IdleAnimation.Draw(spriteBatch,
-                new Rectangle(0, 0, 200, 200),
-                Color.White);
+
+            Cartolina_Body.Draw(spriteBatch, new Rectangle(0, 0, 200, 220), Color.White);
+            spriteBatch.Draw(eyesSprite, new Rectangle(50, 50, 200, 200), Color.White);
+            Cartolina_mouth.Draw(spriteBatch, new Rectangle(80, 130, 50, 50), Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
