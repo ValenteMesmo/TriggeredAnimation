@@ -7,151 +7,80 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TriggeredAnimation
 {
-    public class Cartolina_Idle_mouth : TextureAnimation
-    {
-        public Cartolina_Idle_mouth(ContentManager content) : base(content)
-        {
-        }
 
-        public override string GetAssetName()
-        {
-            return
-                 "mounth";
-        }
-
-        protected override string GetJsonData()
-        {
-            return @"{""frames"": [
-
-{
-	""filename"": ""mounth.swf0000"",
-	""frame"": {""x"":0,""y"":0,""w"":39,""h"":21},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":39,""h"":21},
-	""sourceSize"": {""w"":39,""h"":21}
-}
-,{
-	""filename"": ""mounth.swf0001"",
-	""frame"": {""x"":0,""y"":21,""w"":39,""h"":21},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":39,""h"":21},
-	""sourceSize"": {""w"":39,""h"":21}
-}
-,{
-	""filename"": ""mounth.swf0002"",
-	""frame"": {""x"":0,""y"":42,""w"":39,""h"":21},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":39,""h"":21},
-	""sourceSize"": {""w"":39,""h"":21}
-}
-,{
-	""filename"": ""mounth.swf0003"",
-	""frame"": {""x"":0,""y"":63,""w"":39,""h"":21},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":39,""h"":21},
-	""sourceSize"": {""w"":39,""h"":21}
-}],
-""meta"": {
-	""app"": ""Adobe Flash CS6"",
-	""version"": ""12.0.0.481"",
-	""image"": ""mounth.png"",
-	""format"": ""RGBA8888"",
-	""size"": {""w"":64,""h"":128},
-	""scale"": ""1""
-}
-}
-";
-        }
-    }
-    public class Cartolina_Idle_Body : TextureAnimation
-    {
-        public Cartolina_Idle_Body(ContentManager content) : base(content)
-        {
-        }
-
-        public override string GetAssetName()
-        {
-            return "idle_body";
-        }
-
-        protected override string GetJsonData()
-        {
-            return @"{""frames"": [
-
-{
-	""filename"": ""idle.swf0000"",
-	""frame"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}
-,{
-	""filename"": ""idle.swf0001"",
-	""frame"": {""x"":101,""y"":0,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}
-,{
-	""filename"": ""idle.swf0002"",
-	""frame"": {""x"":0,""y"":128,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}
-,{
-	""filename"": ""idle.swf0003"",
-	""frame"": {""x"":101,""y"":128,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}
-,{
-	""filename"": ""idle.swf0004"",
-	""frame"": {""x"":0,""y"":256,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}
-,{
-	""filename"": ""idle.swf0005"",
-	""frame"": {""x"":101,""y"":256,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}
-,{
-	""filename"": ""idle.swf0006"",
-	""frame"": {""x"":0,""y"":384,""w"":101,""h"":128},
-	""rotated"": false,
-	""trimmed"": false,
-	""spriteSourceSize"": {""x"":0,""y"":0,""w"":101,""h"":128},
-	""sourceSize"": {""w"":101,""h"":128}
-}],
-""meta"": {
-	""app"": ""Adobe Flash CS6"",
-	""version"": ""12.0.0.481"",
-	""image"": ""idle_body.png"",
-	""format"": ""RGBA8888"",
-	""size"": {""w"":256,""h"":512},
-	""scale"": ""1""
-}
-}";
-        }
-    }
-
-    //TODO: update that receives float
     public abstract class ScaleAnimation
+    {
+        private int currentFrame;
+        private readonly AnimationFramesFileRectangle[] Frames;
+        private readonly int totalFrames;
+        private Texture2D SpriteTexture;
+
+        protected abstract string GetJsonData();
+        public abstract string GetAssetName();
+
+        public ScaleAnimation(ContentManager content)
+        {
+            SpriteTexture = content.Load<Texture2D>(GetAssetName());
+            currentFrame = 0;
+            Frames = JsonConvert.DeserializeObject<AnimationFramesFile>(GetJsonData())
+                .frames.Select(f => f.frame).ToArray();
+            totalFrames = Frames.Length - 1;
+        }
+
+        public void Update(float scale)
+        {
+            //scale     0.8f;
+            //count     4 - 1
+            //
+
+            //scale index
+            //1     3
+            //0.8   x
+
+            var index = (scale * (totalFrames))/0.3f;
+
+            currentFrame = (int)
+                //Math.Ceiling(
+                Math.Floor(
+                    index
+            );
+
+            if (currentFrame > totalFrames)
+                currentFrame = totalFrames;
+        }
+
+        public void Draw(SpriteBatch batch, Rectangle destination, Color color)
+        {
+            batch.Draw(
+                SpriteTexture,
+                destination,
+                new Rectangle(
+                Frames[currentFrame].x,
+                Frames[currentFrame].y,
+                Frames[currentFrame].w,
+                Frames[currentFrame].h),
+                color);
+        }
+
+        private class AnimationFramesFile
+        {
+            public AnimationFramesFileFrame[] frames { get; set; }
+        }
+
+        private class AnimationFramesFileFrame
+        {
+            public string filename { get; set; }
+            public AnimationFramesFileRectangle frame { get; set; }
+        }
+
+        private class AnimationFramesFileRectangle
+        {
+            public int x { get; set; }
+            public int y { get; set; }
+            public int w { get; set; }
+            public int h { get; set; }
+        }
+    }
 
     public abstract class TextureAnimation
     {
@@ -161,7 +90,7 @@ namespace TriggeredAnimation
         private Texture2D SpriteTexture;
 
         protected abstract string GetJsonData();
-        public abstract string GetAssetName();        
+        public abstract string GetAssetName();
 
         public TextureAnimation(ContentManager content)
         {

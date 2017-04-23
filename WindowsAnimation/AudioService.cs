@@ -40,12 +40,17 @@ namespace TriggeredAnimation
         public float Current;
         private void ProcessSample(float sample32)
         {
-            if (sample32 > 0.01f)
+            //if (sample32 > 0.01f)
+            //    Current = sample32;
+            //else if (sample32 < -0.01f)
+            //    Current = -sample32;
+            //else
+            //    Current = 0f;
+
+            if (sample32 >= 0)
                 Current = sample32;
-            else if (sample32 < -0.01f)
-                Current = -sample32;
             else
-                Current = 0f;
+                Current = -sample32;           
         }
     }
 }

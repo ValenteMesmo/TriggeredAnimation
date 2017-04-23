@@ -46,14 +46,15 @@ namespace TriggeredAnimation
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            Cartolina_Body.Update();
-            if (AudioService.Current > 0f)
-                Cartolina_mouth.Update();
+            
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            Cartolina_Body.Update();
+            Cartolina_mouth.Update(AudioService.Current);
+
             var width = 131;
             var height = 132;
 
