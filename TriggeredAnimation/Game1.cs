@@ -1,0 +1,82 @@
+﻿using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace TriggeredAnimation
+{
+    public class Game1 : Game
+    {
+        GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
+
+        TextureAnimation IdleAnimation { get; set; }
+
+        public Game1()
+        {
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+        }
+
+        AudioService AudioService;
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+            AudioService = new AudioService();
+        }
+
+        protected override void LoadContent()
+        {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            IdleAnimation = new Cartolina_Idle_Body(Content);
+        }
+
+        protected override void UnloadContent()
+        {
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+            IdleAnimation.Update();
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            var width = 131;
+            var height = 132;
+
+            var x = width;
+            var y = height;
+
+            if (AudioService.Current > 0)
+            {
+                x = 0;
+                y = 0;
+            }
+
+            GraphicsDevice.Clear(Color.Blue);
+            spriteBatch.Begin();
+            //spriteBatch.Draw(
+            //   RoundButton,
+            //   new Rectangle(
+            //       0, 
+            //       0, 
+            //       200 , 
+            //       200 ),
+            //   new Rectangle(x,y , width, height),
+            //   Color.Red);
+
+            IdleAnimation.Draw(spriteBatch,
+                new Rectangle(0, 0, 200, 200),
+                Color.White);
+
+            spriteBatch.End();
+            base.Draw(gameTime);
+        }
+    }
+}
