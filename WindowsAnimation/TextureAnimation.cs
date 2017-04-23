@@ -150,6 +150,9 @@ namespace TriggeredAnimation
         }
     }
 
+    //TODO: update that receives float
+    public abstract class ScaleAnimation
+
     public abstract class TextureAnimation
     {
         private int currentFrame;

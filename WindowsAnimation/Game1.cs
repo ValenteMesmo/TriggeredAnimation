@@ -81,7 +81,7 @@ namespace TriggeredAnimation
 
             Cartolina_Body.Draw(spriteBatch, new Rectangle(0, 0, 200, 220), Color.White);
             spriteBatch.Draw(eyesSprite, new Rectangle(50, 50, 200, 200), Color.White);
-            Cartolina_mouth.Draw(spriteBatch, new Rectangle(80, 130, 50, 50), Color.White);
+            Cartolina_mouth.Draw(spriteBatch, new Rectangle(55, 130, 100, 50), Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
