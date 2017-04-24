@@ -44,8 +44,7 @@ namespace TriggeredAnimation
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            
             
             base.Update(gameTime);
         }
@@ -82,7 +81,7 @@ namespace TriggeredAnimation
 
             Cartolina_Body.Draw(spriteBatch, new Rectangle(0, 0, 200, 220), Color.White);
             spriteBatch.Draw(eyesSprite, new Rectangle(50, 50, 200, 200), Color.White);
-            Cartolina_mouth.Draw(spriteBatch, new Rectangle(55, 130, 100, 50), Color.White);
+            Cartolina_mouth.Draw(spriteBatch, new Rectangle(80, 130, 50, 25), Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);

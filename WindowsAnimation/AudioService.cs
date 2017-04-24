@@ -3,8 +3,9 @@ using NAudio.Wave;
 
 namespace TriggeredAnimation
 {
-    class AudioService
+    public class AudioService
     {
+        FixedSizedQueue<float> values = new FixedSizedQueue<float>(300);
         public AudioService()
         {
             //int waveInDevices = WaveIn.DeviceCount;
@@ -14,7 +15,7 @@ namespace TriggeredAnimation
             //    //Console.WriteLine("Device {0}: {1}, {2} channels",
             //    //    waveInDevice, deviceInfo.ProductName, deviceInfo.Channels);
             //}
-            if (WaveIn.DeviceCount== 0)
+            if (WaveIn.DeviceCount == 0)
                 return;
 
             var waveIn = new WaveInEvent();
@@ -37,20 +38,22 @@ namespace TriggeredAnimation
             }
         }
 
-        public float Current;
+        public float Current
+        {
+            get
+            {
+                var sum = 0f;
+                foreach (var item in values)
+                {
+                    sum += Math.Abs(item);
+                }
+                return sum / values.Limit;
+            }
+        }
+
         private void ProcessSample(float sample32)
         {
-            //if (sample32 > 0.01f)
-            //    Current = sample32;
-            //else if (sample32 < -0.01f)
-            //    Current = -sample32;
-            //else
-            //    Current = 0f;
-
-            if (sample32 >= 0)
-                Current = sample32;
-            else
-                Current = -sample32;           
+            values.Enqueue(Math.Abs(sample32));
         }
     }
 }

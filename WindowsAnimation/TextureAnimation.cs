@@ -4,9 +4,49 @@ using Newtonsoft.Json;
 using System.Linq;
 using System;
 using Microsoft.Xna.Framework.Content;
+using System.Collections.Concurrent;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace TriggeredAnimation
 {
+    public class FixedSizedQueue<T> : IOrderedEnumerable<T>
+    {
+       private ConcurrentQueue<T> q = new ConcurrentQueue<T>();
+
+        public FixedSizedQueue(int Limit)
+        {
+            this.Limit = Limit;
+        }
+
+        public int Limit { get; set; }
+
+        public IOrderedEnumerable<T> CreateOrderedEnumerable<TKey>(Func<T, TKey> keySelector, IComparer<TKey> comparer, bool descending)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Enqueue(T obj)
+        {
+            q.Enqueue(obj);
+            lock (this)
+            {
+                T overflow;
+                while (q.Count > Limit && q.TryDequeue(out overflow)) ;
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return q.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return q.GetEnumerator();
+        }
+    }
+
 
     public abstract class ScaleAnimation
     {
@@ -27,26 +67,22 @@ namespace TriggeredAnimation
             totalFrames = Frames.Length - 1;
         }
 
+        
         public void Update(float scale)
         {
-            //scale     0.8f;
-            //count     4 - 1
-            //
-
-            //scale index
-            //1     3
-            //0.8   x
-
-            var index = (scale * (totalFrames))/0.3f;
-
-            currentFrame = (int)
+            var index = (scale * (totalFrames))/0.08f;
+            
+                currentFrame = (int)
                 //Math.Ceiling(
                 Math.Floor(
                     index
-            );
+            )
+            ;
 
             if (currentFrame > totalFrames)
                 currentFrame = totalFrames;
+            else if (currentFrame < 0)
+                currentFrame = 0;
         }
 
         public void Draw(SpriteBatch batch, Rectangle destination, Color color)
