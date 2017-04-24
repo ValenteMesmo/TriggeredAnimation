@@ -2,13 +2,12 @@
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using System.Linq;
-using Microsoft.Xna.Framework.Content;
 using System;
+using Microsoft.Xna.Framework.Content;
 
 namespace TriggeredAnimation
 {
-
-    public abstract class TextureAnimation
+    public abstract class ScaleAnimation
     {
         private int currentFrame;
         private readonly AnimationFramesFileRectangle[] Frames;
@@ -18,7 +17,7 @@ namespace TriggeredAnimation
         protected abstract string GetJsonData();
         public abstract string GetAssetName();
 
-        public TextureAnimation(ContentManager content)
+        public ScaleAnimation(ContentManager content)
         {
             SpriteTexture = content.Load<Texture2D>(GetAssetName());
             currentFrame = 0;
@@ -27,16 +26,21 @@ namespace TriggeredAnimation
             totalFrames = Frames.Length - 1;
         }
 
-        DateTime nextFrameTime;
-        public void Update()
+        
+        public void Update(float scale)
         {
-            if (DateTime.Now < nextFrameTime)
-                return;
+            var index = (scale * (totalFrames))/0.08f;
+            
+                currentFrame = (int)
+                //Math.Ceiling(
+                Math.Floor(
+                    index
+            )
+            ;
 
-            nextFrameTime = DateTime.Now.AddMilliseconds(60);
-
-            currentFrame++;
-            if (currentFrame == totalFrames)
+            if (currentFrame > totalFrames)
+                currentFrame = totalFrames;
+            else if (currentFrame < 0)
                 currentFrame = 0;
         }
 
