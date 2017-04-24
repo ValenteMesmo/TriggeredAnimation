@@ -44,11 +44,16 @@ namespace TriggeredAnimation
                 currentFrame = 0;
         }
 
-        public void Draw(SpriteBatch batch, Rectangle destination, Color color)
+        public void Draw(SpriteBatch batch, int x, int y, Color color)
         {
             batch.Draw(
                 SpriteTexture,
-                destination,
+                new Rectangle(
+                    x,
+                    y,
+                    Frames[currentFrame].w,
+                    Frames[currentFrame].h
+                ),
                 new Rectangle(
                 Frames[currentFrame].x,
                 Frames[currentFrame].y,

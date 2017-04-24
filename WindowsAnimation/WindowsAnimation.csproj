@@ -46,6 +46,7 @@
     <Compile Include="Cartolina_Idle_mouth.cs" />
     <Compile Include="FixedSizedQueue.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Idle_Eye_Animation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScaleAnimation.cs" />

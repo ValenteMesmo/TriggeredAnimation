@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using WindowsAnimation;
 
 namespace TriggeredAnimation
 {
@@ -19,9 +20,9 @@ namespace TriggeredAnimation
         }
 
         AudioService AudioService;
-        private Texture2D eyesSprite;
         private Cartolina_Idle_mouth Cartolina_mouth;
         private Cartolina_Idle Cartolina_Body;
+        private Idle_Eye_Animation Cartolina_eye;
 
         protected override void Initialize()
         {
@@ -32,8 +33,8 @@ namespace TriggeredAnimation
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            eyesSprite = Content.Load<Texture2D>("eyes");
 
+            Cartolina_eye = new Idle_Eye_Animation(Content);
             Cartolina_mouth = new Cartolina_Idle_mouth(Content);
             Cartolina_Body = new Cartolina_Idle(Content);
         }
@@ -44,14 +45,17 @@ namespace TriggeredAnimation
 
         protected override void Update(GameTime gameTime)
         {
-            
-            
+
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
+
             Cartolina_Body.Update();
+            Cartolina_eye.Update();
             Cartolina_mouth.Update(AudioService.Current);
 
             var width = 131;
@@ -69,9 +73,13 @@ namespace TriggeredAnimation
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
 
-            Cartolina_Body.Draw(spriteBatch, new Rectangle(0, 0, 200, 220), Color.White);
-            spriteBatch.Draw(eyesSprite, new Rectangle(30, 50, 200, 200), Color.White);
-            Cartolina_mouth.Draw(spriteBatch, new Rectangle(60, 130, 50, 25), Color.White);
+            Cartolina_Body.Draw(spriteBatch, 0, 0, Color.White);
+            Cartolina_eye.Draw(
+                spriteBatch,
+                24 + (int)(gamePadState.ThumbSticks.Left.X * 5),
+                68 - (int)(gamePadState.ThumbSticks.Left.Y * 5),
+                Color.White);
+            Cartolina_mouth.Draw(spriteBatch, 24, 98, Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
