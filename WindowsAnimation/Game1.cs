@@ -68,20 +68,10 @@ namespace TriggeredAnimation
 
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
-            //spriteBatch.Draw(
-            //   RoundButton,
-            //   new Rectangle(
-            //       0, 
-            //       0, 
-            //       200 , 
-            //       200 ),
-            //   new Rectangle(x,y , width, height),
-            //   Color.Red);
-
 
             Cartolina_Body.Draw(spriteBatch, new Rectangle(0, 0, 200, 220), Color.White);
-            spriteBatch.Draw(eyesSprite, new Rectangle(50, 50, 200, 200), Color.White);
-            Cartolina_mouth.Draw(spriteBatch, new Rectangle(80, 130, 50, 25), Color.White);
+            spriteBatch.Draw(eyesSprite, new Rectangle(30, 50, 200, 200), Color.White);
+            Cartolina_mouth.Draw(spriteBatch, new Rectangle(60, 130, 50, 25), Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
