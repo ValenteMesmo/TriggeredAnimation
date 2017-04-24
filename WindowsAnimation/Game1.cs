@@ -21,7 +21,7 @@ namespace TriggeredAnimation
         AudioService AudioService;
         private Texture2D eyesSprite;
         private Cartolina_Idle_mouth Cartolina_mouth;
-        private Cartolina_Idle_Body Cartolina_Body;
+        private Cartolina_Idle Cartolina_Body;
 
         protected override void Initialize()
         {
@@ -35,7 +35,7 @@ namespace TriggeredAnimation
             eyesSprite = Content.Load<Texture2D>("eyes");
 
             Cartolina_mouth = new Cartolina_Idle_mouth(Content);
-            Cartolina_Body = new Cartolina_Idle_Body(Content);
+            Cartolina_Body = new Cartolina_Idle(Content);
         }
 
         protected override void UnloadContent()

@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AudioService.cs" />
-    <Compile Include="Cartolina_Idle_Body.cs" />
+    <Compile Include="Cartolina_Idle.cs" />
     <Compile Include="Cartolina_Idle_mouth.cs" />
     <Compile Include="FixedSizedQueue.cs" />
     <Compile Include="Game1.cs" />
