@@ -8,9 +8,9 @@ using TriggeredAnimation;
 
 namespace WindowsAnimation
 {
-    class Idle_Eye_Animation : TextureAnimation
+    class Cartolina_Idle_Eye_Animation : TextureAnimation
     {
-        public Idle_Eye_Animation(ContentManager content) : base(content)
+        public Cartolina_Idle_Eye_Animation(ContentManager content) : base(content)
         {
         }
 

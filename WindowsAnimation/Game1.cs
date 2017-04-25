@@ -22,7 +22,8 @@ namespace TriggeredAnimation
         AudioService AudioService;
         private Cartolina_Idle_mouth Cartolina_mouth;
         private Cartolina_Idle Cartolina_Body;
-        private Idle_Eye_Animation Cartolina_eye;
+        private Cartolina_Idle_Eye_Animation Cartolina_eye;
+        private Cartolina_Olhos_Fechados OlhosFechandos;
 
         protected override void Initialize()
         {
@@ -33,10 +34,10 @@ namespace TriggeredAnimation
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            Cartolina_eye = new Idle_Eye_Animation(Content);
+            Cartolina_eye = new Cartolina_Idle_Eye_Animation(Content);
             Cartolina_mouth = new Cartolina_Idle_mouth(Content);
             Cartolina_Body = new Cartolina_Idle(Content);
+            OlhosFechandos = new Cartolina_Olhos_Fechados(Content);
         }
 
         protected override void UnloadContent()
@@ -45,17 +46,13 @@ namespace TriggeredAnimation
 
         protected override void Update(GameTime gameTime)
         {
-
-
             base.Update(gameTime);
-        }
-
+        }       
+        
         protected override void Draw(GameTime gameTime)
         {
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
-
-            Cartolina_Body.Update();
-            Cartolina_eye.Update();
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+                        
             Cartolina_mouth.Update(AudioService.Current);
 
             var width = 131;
@@ -72,13 +69,15 @@ namespace TriggeredAnimation
 
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
-
+            
             Cartolina_Body.Draw(spriteBatch, 0, 0, Color.White);
             Cartolina_eye.Draw(
                 spriteBatch,
                 24 + (int)(gamePadState.ThumbSticks.Left.X * 5),
-                68 - (int)(gamePadState.ThumbSticks.Left.Y * 5),
+                71 - (int)(gamePadState.ThumbSticks.Left.Y * 2),
                 Color.White);
+
+            OlhosFechandos.Draw(spriteBatch, 14, 58, Color.White);
             Cartolina_mouth.Draw(spriteBatch, 24, 98, Color.White);
 
             spriteBatch.End();

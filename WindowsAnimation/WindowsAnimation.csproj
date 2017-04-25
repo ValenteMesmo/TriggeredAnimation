@@ -42,15 +42,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AudioService.cs" />
-    <Compile Include="Cartolina_Idle.cs" />
-    <Compile Include="Cartolina_Idle_mouth.cs" />
+    <Compile Include="Animations\Cartolina_Idle.cs" />
+    <Compile Include="Animations\Cartolina_Idle_Eyes2.cs" />
+    <Compile Include="Animations\Cartolina_Idle_mouth.cs" />
     <Compile Include="FixedSizedQueue.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Idle_Eye_Animation.cs" />
+    <Compile Include="Animations\Cartolina_Idle_Eye_Animation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScaleAnimation.cs" />
-    <Compile Include="TextureAnimation.cs" />
+    <Compile Include="Animations\Base\ScaleAnimation.cs" />
+    <Compile Include="Animations\Base\TextureAnimationReverseLoop.cs" />
+    <Compile Include="Animations\Base\TextureAnimation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

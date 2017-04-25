@@ -7,6 +7,46 @@ using System;
 
 namespace TriggeredAnimation
 {
+    //public interface IDrawAnimation
+    //{
+    //    void Draw();
+    //    bool AnimationEnded { get; }
+    //}
+
+    //public class SwitchAnimationInterval  : IDrawAnimation
+    //{
+    //    private IDrawAnimation first;
+    //    private IDrawAnimation second;
+    //    private IDrawAnimation current;
+
+    //    public SwitchAnimationInterval(
+    //        IDrawAnimation first,
+    //        IDrawAnimation second)
+    //    {
+    //        current = this.first = first;
+    //        this.second = second;
+    //    }
+
+    //    public bool AnimationEnded { get; set; }
+
+    //    public void Draw()
+    //    {
+    //        if (current.AnimationEnded)
+    //        {
+    //            if (current == first)
+    //            {
+    //                current = second;
+    //            }
+    //            else
+    //            {
+    //                AnimationEnded = true;
+    //                current = first;
+    //            }
+    //        }
+
+    //        current.Draw();
+    //    }
+    //}
 
     public abstract class TextureAnimation
     {
@@ -28,7 +68,7 @@ namespace TriggeredAnimation
         }
 
         DateTime nextFrameTime;
-        public void Update()
+        private void Update()
         {
             if (DateTime.Now < nextFrameTime)
                 return;
@@ -42,6 +82,7 @@ namespace TriggeredAnimation
 
         public void Draw(SpriteBatch batch, int x, int y, Color color)
         {
+            Update();
             batch.Draw(
                 SpriteTexture,
                 new Rectangle(
