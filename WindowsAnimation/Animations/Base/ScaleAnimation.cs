@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TriggeredAnimation
 {
+    //TODO: remove?
     public abstract class ScaleAnimation
     {
         private int currentFrame;

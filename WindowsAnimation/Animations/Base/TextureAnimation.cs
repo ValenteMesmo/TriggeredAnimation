@@ -1,120 +1,69 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
-using System.Linq;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace TriggeredAnimation
 {
-    //public interface IDrawAnimation
-    //{
-    //    void Draw();
-    //    bool AnimationEnded { get; }
-    //}
-
-    //public class SwitchAnimationInterval  : IDrawAnimation
-    //{
-    //    private IDrawAnimation first;
-    //    private IDrawAnimation second;
-    //    private IDrawAnimation current;
-
-    //    public SwitchAnimationInterval(
-    //        IDrawAnimation first,
-    //        IDrawAnimation second)
-    //    {
-    //        current = this.first = first;
-    //        this.second = second;
-    //    }
-
-    //    public bool AnimationEnded { get; set; }
-
-    //    public void Draw()
-    //    {
-    //        if (current.AnimationEnded)
-    //        {
-    //            if (current == first)
-    //            {
-    //                current = second;
-    //            }
-    //            else
-    //            {
-    //                AnimationEnded = true;
-    //                current = first;
-    //            }
-    //        }
-
-    //        current.Draw();
-    //    }
-    //}
-
-    public abstract class TextureAnimation
+    class AnimationLoop : IGetNextAnimationFrame
     {
-        private int currentFrame;
-        private readonly AnimationFramesFileRectangle[] Frames;
-        private readonly int totalFrames;
-        private Texture2D SpriteTexture;
+        private readonly IGetNextAnimationFrame Animation;
 
-        protected abstract string GetJsonData();
-        public abstract string GetAssetName();
-
-        public TextureAnimation(ContentManager content)
+        public AnimationLoop(IGetNextAnimationFrame Animation)
         {
-            SpriteTexture = content.Load<Texture2D>(GetAssetName());
-            currentFrame = 0;
-            Frames = JsonConvert.DeserializeObject<AnimationFramesFile>(GetJsonData())
-                .frames.Select(f => f.frame).ToArray();
-            totalFrames = Frames.Length - 1;
+            this.Animation = Animation;
         }
 
-        DateTime nextFrameTime;
-        private void Update()
+        public bool Ended()
         {
-            if (DateTime.Now < nextFrameTime)
-                return;
+            return Animation.Ended();
+        }
 
-            nextFrameTime = DateTime.Now.AddMilliseconds(60);
+        public Rectangle GetNextFrame(DateTime now)
+        {
+            if (Animation.Ended())
+                Animation.Reset();
 
-            currentFrame++;
-            if (currentFrame == totalFrames)
-                currentFrame = 0;
+            return Animation.GetNextFrame(now);
+        }
+
+        public void Reset()
+        {
+            Animation.Reset();
+        }
+    }
+
+    public class TextureAnimation
+    {
+        private IGetNextAnimationFrame AnimationSelector;
+        private Texture2D SpriteTexture;
+
+        public TextureAnimation(
+            IGetNextAnimationFrame AnimationSelector,
+            Texture2D SpriteTexture)
+        {
+
+            this.SpriteTexture = SpriteTexture;
+            this.AnimationSelector = AnimationSelector;
         }
 
         public void Draw(SpriteBatch batch, int x, int y, Color color)
         {
-            Update();
+            var frame = AnimationSelector.GetNextFrame(DateTime.Now);
             batch.Draw(
                 SpriteTexture,
                 new Rectangle(
                     x,
                     y,
-                    Frames[currentFrame].w,
-                    Frames[currentFrame].h),
-                new Rectangle(
-                Frames[currentFrame].x,
-                Frames[currentFrame].y,
-                Frames[currentFrame].w,
-                Frames[currentFrame].h),
+                    frame.Width,
+                    frame.Height),
+                frame,
                 color);
         }
 
-        private class AnimationFramesFile
+        public TextureAnimation AsLoop()
         {
-            public AnimationFramesFileFrame[] frames { get; set; }
-        }
-
-        private class AnimationFramesFileFrame
-        {
-            public string filename { get; set; }
-            public AnimationFramesFileRectangle frame { get; set; }
-        }
-
-        private class AnimationFramesFileRectangle
-        {
-            public int x { get; set; }
-            public int y { get; set; }
-            public int w { get; set; }
-            public int h { get; set; }
+            AnimationSelector = new AnimationLoop(AnimationSelector);
+            return this;
         }
     }
 }
