@@ -3,14 +3,7 @@ using System;
 
 namespace TriggeredAnimation
 {
-    public interface IGetNextAnimationFrame
-    {
-        Rectangle GetNextFrame(DateTime now);
-        void Reset();
-        bool Ended();
-    }
-
-    public class BaseAnimation: IGetNextAnimationFrame
+    public class FrameChooser
     {
         private int currentIndex;
         private readonly Rectangle[] Frames;
@@ -18,7 +11,7 @@ namespace TriggeredAnimation
         private int frameRate;
         private DateTime nextFrameTime;
 
-        public BaseAnimation(int frameRate, params Rectangle[] Frames)
+        public FrameChooser(int frameRate, params Rectangle[] Frames)
         {
             this.frameRate = frameRate;
             currentIndex = 0;
@@ -36,6 +29,9 @@ namespace TriggeredAnimation
             if (now < nextFrameTime)
                 return Frames[currentIndex];
 
+            if (HasEnded())
+                currentIndex = 0;
+
             nextFrameTime = now.AddMilliseconds(frameRate);
 
             currentIndex++;
@@ -45,28 +41,9 @@ namespace TriggeredAnimation
             return Frames[currentIndex];
         }
 
-        public bool Ended()
+        public bool HasEnded()
         {
             return currentIndex == totalFrames;
         }
-    }
-
-    public class AnimationFramesFile
-    {
-        public AnimationFramesFileFrame[] frames { get; set; }
-    }
-
-    public class AnimationFramesFileFrame
-    {
-        public string filename { get; set; }
-        public AnimationFramesFileRectangle frame { get; set; }
-    }
-
-    public class AnimationFramesFileRectangle
-    {
-        public int x { get; set; }
-        public int y { get; set; }
-        public int w { get; set; }
-        public int h { get; set; }
     }
 }

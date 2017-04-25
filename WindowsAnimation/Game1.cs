@@ -19,11 +19,8 @@ namespace TriggeredAnimation
         }
 
         AudioService AudioService;
-        private TextureAnimation Cartolina_mouth;
-        private TextureAnimation Cartolina_Body;
-        private TextureAnimation Cartolina_eye;
-        private TextureAnimation OlhosFechandos;
-        private TextureAnimation Cartolina_Idle_Olhos_bem_abertos;
+        Animator Animator;
+        Animator Animator2;
 
         protected override void Initialize()
         {
@@ -34,11 +31,23 @@ namespace TriggeredAnimation
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Cartolina_eye = File_eyes.CreateAnimation(Content);
-            Cartolina_mouth = File_eyes2.CreateAnimation(Content);
-            Cartolina_Body = File_idle.CreateAnimation(Content).AsLoop();
-            OlhosFechandos = File_eyes_muito_abertos.CreateAnimation(Content);
-            Cartolina_Idle_Olhos_bem_abertos = File_eyes_muito_abertos.CreateAnimation(Content);
+
+            var Cartolina_eye = Content.CreateAnimation_eyes();
+            var Cartolina_mouth = Content.CreateAnimation_eyes_muito_abertos();
+            var Cartolina_Body = Content.CreateAnimation_idle();
+            var OlhosFechandos = Content.CreateAnimation_eyes2();
+            var Cartolina_Idle_Olhos_bem_abertos = Content.CreateAnimation_eyes_muito_abertos();
+
+            Animator = new Animator(
+                new AnimationTransitionRule(Cartolina_eye, OlhosFechandos),
+                new AnimationTransitionRule(OlhosFechandos, Cartolina_eye)
+            );
+
+            Animator2 = new Animator(
+                new AnimationTransitionRule(Cartolina_Body, Cartolina_Idle_Olhos_bem_abertos),
+                new AnimationTransitionRule(Cartolina_Idle_Olhos_bem_abertos, Cartolina_Body)
+            );
+
         }
 
         protected override void UnloadContent()
@@ -48,8 +57,8 @@ namespace TriggeredAnimation
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-        }       
-        
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
@@ -68,21 +77,24 @@ namespace TriggeredAnimation
 
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
-            
-            Cartolina_Body.Draw(spriteBatch, 0, 0, Color.White);
-            Cartolina_eye.Draw(
-                spriteBatch,
-                24 + (int)(gamePadState.ThumbSticks.Left.X * 5),
-                71 - (int)(gamePadState.ThumbSticks.Left.Y * 2),
-                Color.White);
 
-            //OlhosFechandos.Draw(spriteBatch, 14, 58, Color.White);
-            Cartolina_mouth.Draw(spriteBatch, 24, 98, Color.White);
-            Cartolina_Idle_Olhos_bem_abertos.Draw(
-                spriteBatch,
-                14,
-                56,
-                Color.White);
+            //Cartolina_Body.Draw(spriteBatch, 0, 0, Color.White);
+            //Cartolina_eye.Draw(
+            //    spriteBatch,
+            //    24 + (int)(gamePadState.ThumbSticks.Left.X * 5),
+            //    71 - (int)(gamePadState.ThumbSticks.Left.Y * 2),
+            //    Color.White);
+
+            ////OlhosFechandos.Draw(spriteBatch, 14, 58, Color.White);
+            //Cartolina_mouth.Draw(spriteBatch, 24, 98, Color.White);
+            //Cartolina_Idle_Olhos_bem_abertos.Draw(
+            //    spriteBatch,
+            //    14,
+            //    56,
+            //    Color.White);
+
+            //Animator.Draw(spriteBatch,0,0,Color.White);
+           Animator2.Draw(spriteBatch, 0, 0, Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
