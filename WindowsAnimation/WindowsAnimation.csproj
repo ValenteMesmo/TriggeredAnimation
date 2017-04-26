@@ -43,10 +43,11 @@
   <ItemGroup>
     <Compile Include="Animations\Base\AnimationChoosers\IGetNextAnimationFrame.cs" />
     <Compile Include="AudioService.cs" />
-    <Compile Include="Content\File_eyes.cs" />
-    <Compile Include="Content\File_eyes2.cs" />
-    <Compile Include="Content\File_eyes_muito_abertos.cs" />
-    <Compile Include="Content\File_idle.cs" />
+    <Compile Include="Content\ContentManagerExtensions_Boca.cs" />
+    <Compile Include="Content\ContentManagerExtensions_Corpo.cs" />
+    <Compile Include="Content\ContentManagerExtensions_PalpebrasBemAbertas.cs" />
+    <Compile Include="Content\ContentManagerExtensions_PalpebrasFechando.cs" />
+    <Compile Include="Content\ContentManagerExtensions_pupila.cs" />
     <Compile Include="FixedSizedQueue.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
@@ -69,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\ConvertJsonToCs.exe" />
+    <Content Include="Content\MonoGameJsonImporter.dll" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

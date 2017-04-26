@@ -10,8 +10,8 @@ namespace TriggeredAnimation
         public Dictionary<string, string> Parameters { get; }
 
         public ParameterizedAnimationTransitionRule(
-            Animation Source,
-            Animation Target,
+            IAnimation Source,
+            IAnimation Target,
             params KeyValuePair<string, string>[] parameters) : base(Source, Target)
         {
             Parameters = new Dictionary<string, string>();
@@ -26,17 +26,24 @@ namespace TriggeredAnimation
 
     public class AnimationTransitionRule
     {
-        public AnimationTransitionRule(Animation Source, Animation Target)
+        public AnimationTransitionRule(IAnimation Source, IAnimation Target)
         {
             this.Source = Source;
             this.Target = Target;
         }
 
-        public Animation Source { get; }
-        public Animation Target { get; }
+        public IAnimation Source { get; }
+        public IAnimation Target { get; }
     }
 
-    public class Animation
+    public interface IAnimation
+    {
+        void Draw(SpriteBatch batch, int x, int y, Color color);
+        void Reset();
+        bool HasEnded { get; }
+    }
+
+    public class Animation : IAnimation
     {
         public Texture2D Texture { get; }
         public FrameChooser AnimationFrameChooser { get; }
@@ -56,9 +63,18 @@ namespace TriggeredAnimation
             this.AnimationFrameChooser = AnimationFrameChooser;
         }
 
-        public Rectangle GetSourceRectangle()
+        public void Draw(SpriteBatch batch, int x, int y, Color color)
         {
-            return AnimationFrameChooser.GetNextFrame(DateTime.Now);
+            var frame = AnimationFrameChooser.GetNextFrame(DateTime.Now);
+            batch.Draw(
+                Texture,
+                new Rectangle(
+                    x,
+                    y,
+                    frame.Width,
+                    frame.Height),
+                frame,
+                color);
         }
 
         public void Reset()
@@ -67,10 +83,25 @@ namespace TriggeredAnimation
         }
     }
 
+    public class EmptyAnimation : IAnimation
+    {
+        public bool HasEnded => true;
+
+        public void Draw(SpriteBatch batch, int x, int y, Color color)
+        {
+            
+        }
+
+        public void Reset()
+        {
+            
+        }
+    }
+
     public class Animator
     {
         private AnimationTransitionRule[] Rules;
-        private Animation CurrentAnimation;
+        private IAnimation CurrentAnimation;
         private Dictionary<string, string> Parameters;
 
         public Animator(params AnimationTransitionRule[] rules)
@@ -124,16 +155,7 @@ namespace TriggeredAnimation
                 }
             }
 
-            var sourceRectangle = CurrentAnimation.GetSourceRectangle();
-            batch.Draw(
-                 CurrentAnimation.Texture,
-                 new Rectangle(
-                     x,
-                     y,
-                     sourceRectangle.Width,
-                     sourceRectangle.Height),
-                 sourceRectangle,
-                 color);
+            CurrentAnimation.Draw(batch, x, y, color);
         }
     }
 }

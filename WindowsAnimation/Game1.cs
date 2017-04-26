@@ -27,26 +27,30 @@ namespace TriggeredAnimation
             base.Initialize();
             AudioService = new AudioService();
         }
-
+        IAnimation Cartolina_Corpo;
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            var result = Content.Load<string>("Cartolina");
+            var Cartolina_pupila = Content.LoadAnimation_pupila();
+            var Cartolina_Boca = Content.LoadAnimation_Boca();
+            Cartolina_Corpo = Content.LoadAnimation_Corpo();
+            var Cartolina_PalpebrasFechando = Content.LoadAnimation_PalpebrasFechando();
+            var Cartolina_PalpebrasBemAbertos = Content.LoadAnimation_PalpebrasBemAbertas();
 
-            var Cartolina_eye = Content.CreateAnimation_eyes();
-            var Cartolina_mouth = Content.CreateAnimation_eyes_muito_abertos();
-            var Cartolina_Body = Content.CreateAnimation_idle();
-            var OlhosFechandos = Content.CreateAnimation_eyes2();
-            var Cartolina_Idle_Olhos_bem_abertos = Content.CreateAnimation_eyes_muito_abertos();
+            
 
             Animator = new Animator(
-                new AnimationTransitionRule(Cartolina_eye, OlhosFechandos),
-                new AnimationTransitionRule(OlhosFechandos, Cartolina_eye)
+                new AnimationTransitionRule(Cartolina_Boca, Cartolina_PalpebrasBemAbertos)
+                , new AnimationTransitionRule(Cartolina_PalpebrasBemAbertos, Cartolina_Boca)
+            //,
+            //new AnimationTransitionRule(Cartolina_OlhosFechando, Cartolina_pupila)
             );
 
-            Animator2 = new Animator(
-                new AnimationTransitionRule(Cartolina_Body, Cartolina_Idle_Olhos_bem_abertos),
-                new AnimationTransitionRule(Cartolina_Idle_Olhos_bem_abertos, Cartolina_Body)
-            );
+            //Animator2 = new Animator(
+            //    new AnimationTransitionRule(Cartolina_Body, Cartolina_OlhosBemAbertos),
+            //    new AnimationTransitionRule(Cartolina_OlhosBemAbertos, Cartolina_Body)
+            //);
 
         }
 
@@ -94,7 +98,8 @@ namespace TriggeredAnimation
             //    Color.White);
 
             //Animator.Draw(spriteBatch,0,0,Color.White);
-           Animator2.Draw(spriteBatch, 0, 0, Color.White);
+            //Animator.Draw(spriteBatch, 0, 0, Color.White);
+            Cartolina_Corpo.Draw(spriteBatch, 50,50, Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
