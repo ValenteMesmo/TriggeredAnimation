@@ -20,7 +20,6 @@ namespace TriggeredAnimation
 
         AudioService AudioService;
         Animator Animator;
-        Animator Animator2;
 
         protected override void Initialize()
         {
@@ -31,26 +30,18 @@ namespace TriggeredAnimation
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            var result = Content.Load<string>("Cartolina");
-            var Cartolina_pupila = Content.LoadAnimation_pupila();
-            var Cartolina_Boca = Content.LoadAnimation_Boca();
-            Cartolina_Corpo = Content.LoadAnimation_Corpo();
-            var Cartolina_PalpebrasFechando = Content.LoadAnimation_PalpebrasFechando();
-            var Cartolina_PalpebrasBemAbertos = Content.LoadAnimation_PalpebrasBemAbertas();
 
-            
+            var Cartolina_pupila = SpriteSheet_Carolina.Load_Pupila(Content);
+            var Cartolina_Boca = SpriteSheet_Carolina.Load_Boca(Content);
+            Cartolina_Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
+            var Cartolina_PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
+            var Cartolina_PalpebrasBemAbertos = SpriteSheet_Carolina.Load_Palpebras_bem_abertas(Content);
 
             Animator = new Animator(
                 new AnimationTransitionRule(Cartolina_Boca, Cartolina_PalpebrasBemAbertos)
                 , new AnimationTransitionRule(Cartolina_PalpebrasBemAbertos, Cartolina_Boca)
-            //,
-            //new AnimationTransitionRule(Cartolina_OlhosFechando, Cartolina_pupila)
+        
             );
-
-            //Animator2 = new Animator(
-            //    new AnimationTransitionRule(Cartolina_Body, Cartolina_OlhosBemAbertos),
-            //    new AnimationTransitionRule(Cartolina_OlhosBemAbertos, Cartolina_Body)
-            //);
 
         }
 
@@ -99,7 +90,7 @@ namespace TriggeredAnimation
 
             //Animator.Draw(spriteBatch,0,0,Color.White);
             //Animator.Draw(spriteBatch, 0, 0, Color.White);
-            Cartolina_Corpo.Draw(spriteBatch, 50,50, Color.White);
+            Cartolina_Corpo.Draw(spriteBatch, 50, 50, Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);
