@@ -21,7 +21,6 @@ namespace TriggeredAnimation
                 Parameters.Add(item.Key, item.Value);
             }
         }
-
     }
 
     public class AnimationTransitionRule
@@ -43,7 +42,48 @@ namespace TriggeredAnimation
         bool HasEnded { get; }
     }
 
-    public class Animation : IAnimation
+    public class ScaleAnimation : IAnimation
+    {
+        public Texture2D Texture { get; }
+        public FrameChosserByScale AnimationFrameChooser { get; }
+        public bool HasEnded
+        {
+            get
+            {
+                return AnimationFrameChooser.HasEnded();
+            }
+        }
+
+        public ScaleAnimation(
+            Texture2D Texture,
+            FrameChosserByScale AnimationFrameChooser)
+        {
+            this.Texture = Texture;
+            this.AnimationFrameChooser = AnimationFrameChooser;
+        }
+
+        public void Draw(SpriteBatch batch, int x, int y, Color color)
+        {
+            var frame = AnimationFrameChooser.GetNextFrame(DateTime.Now);
+
+            batch.Draw(
+                Texture,
+                new Rectangle(
+                    x,
+                    y,
+                    frame.Width,
+                    frame.Height),
+                frame,
+                color);
+        }
+
+        public void Reset()
+        {
+            AnimationFrameChooser.Reset();
+        }
+    }
+
+    public class SimpleAnimation : IAnimation
     {
         public Texture2D Texture { get; }
         public FrameChooser AnimationFrameChooser { get; }
@@ -55,7 +95,7 @@ namespace TriggeredAnimation
             }
         }
 
-        public Animation(
+        public SimpleAnimation(
             Texture2D Texture,
             FrameChooser AnimationFrameChooser)
         {
@@ -81,20 +121,11 @@ namespace TriggeredAnimation
         {
             AnimationFrameChooser.Reset();
         }
-    }
 
-    public class EmptyAnimation : IAnimation
-    {
-        public bool HasEnded => true;
-
-        public void Draw(SpriteBatch batch, int x, int y, Color color)
+        public ScaleAnimation AsScaleAnimation()
         {
-            
-        }
-
-        public void Reset()
-        {
-            
+            var AudioService = new AudioService();
+            return new ScaleAnimation(Texture,AnimationFrameChooser.AsScale(AudioService.GetCurrent));
         }
     }
 

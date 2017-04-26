@@ -27,12 +27,14 @@ namespace TriggeredAnimation
             AudioService = new AudioService();
         }
         IAnimation Cartolina_Corpo;
+        IAnimation Cartolina_pupila;
+        IAnimation Cartolina_Boca;
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            var Cartolina_pupila = SpriteSheet_Carolina.Load_Pupila(Content);
-            var Cartolina_Boca = SpriteSheet_Carolina.Load_Boca(Content);
+            Cartolina_pupila = SpriteSheet_Carolina.Load_Pupila(Content);
+            Cartolina_Boca = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
             Cartolina_Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
             var Cartolina_PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
             var Cartolina_PalpebrasBemAbertos = SpriteSheet_Carolina.Load_Palpebras_bem_abertas(Content);
@@ -40,7 +42,6 @@ namespace TriggeredAnimation
             Animator = new Animator(
                 new AnimationTransitionRule(Cartolina_Boca, Cartolina_PalpebrasBemAbertos)
                 , new AnimationTransitionRule(Cartolina_PalpebrasBemAbertos, Cartolina_Boca)
-        
             );
 
         }
@@ -58,39 +59,22 @@ namespace TriggeredAnimation
         {
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            var width = 131;
-            var height = 132;
-
-            var x = width;
-            var y = height;
-
-            if (AudioService.Current > 0)
-            {
-                x = 0;
-                y = 0;
-            }
 
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
 
-            //Cartolina_Body.Draw(spriteBatch, 0, 0, Color.White);
-            //Cartolina_eye.Draw(
-            //    spriteBatch,
-            //    24 + (int)(gamePadState.ThumbSticks.Left.X * 5),
-            //    71 - (int)(gamePadState.ThumbSticks.Left.Y * 2),
-            //    Color.White);
-
-            ////OlhosFechandos.Draw(spriteBatch, 14, 58, Color.White);
-            //Cartolina_mouth.Draw(spriteBatch, 24, 98, Color.White);
-            //Cartolina_Idle_Olhos_bem_abertos.Draw(
-            //    spriteBatch,
-            //    14,
-            //    56,
-            //    Color.White);
-
-            //Animator.Draw(spriteBatch,0,0,Color.White);
-            //Animator.Draw(spriteBatch, 0, 0, Color.White);
             Cartolina_Corpo.Draw(spriteBatch, 50, 50, Color.White);
+
+            Cartolina_pupila.Draw(spriteBatch,
+                75 + (int)(gamePadState.ThumbSticks.Left.X * 5),
+                80 - (int)(gamePadState.ThumbSticks.Left.Y * 2),
+                Color.White);
+
+            Cartolina_Boca.Draw(
+                spriteBatch
+                , 75
+                , 105
+                , Color.White);
 
             spriteBatch.End();
             base.Draw(gameTime);

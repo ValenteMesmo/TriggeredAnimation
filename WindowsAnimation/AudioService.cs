@@ -38,17 +38,14 @@ namespace TriggeredAnimation
             }
         }
 
-        public float Current
+        public float GetCurrent()
         {
-            get
+            var sum = 0f;
+            foreach (var item in values)
             {
-                var sum = 0f;
-                foreach (var item in values)
-                {
-                    sum += Math.Abs(item);
-                }
-                return sum / values.Limit;
+                sum += Math.Abs(item);
             }
+            return sum / values.Limit;
         }
 
         private void ProcessSample(float sample32)
