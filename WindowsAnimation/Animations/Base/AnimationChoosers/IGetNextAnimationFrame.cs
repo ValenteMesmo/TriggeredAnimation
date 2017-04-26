@@ -1,29 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 
 namespace TriggeredAnimation
 {
-    public class FrameChosserByScale
+    public class FrameChosserByScale : FrameController
     {
-        private int currentIndex;
-        private readonly Rectangle[] Frames;
-        private readonly int totalFrames;
-        private DateTime nextFrameTime;
         private Func<float> GetScale;
-        public FrameChosserByScale(Func<float> GetScale, params Rectangle[] Frames)
+        public FrameChosserByScale(Func<float> GetScale, params Rectangle[] Frames) : base(Frames)
         {
             currentIndex = 0;
-            this.Frames = Frames;
             this.GetScale = GetScale;
-            totalFrames = Frames.Length - 1;
         }
 
-        public void Reset()
+        public override void Reset()
         {
             currentIndex = 0;
         }
 
-        public Rectangle GetNextFrame(DateTime now)
+        public override Rectangle GetNextFrame(DateTime now)
         {
             var index = (GetScale() * (totalFrames)) / 0.08f;
 
@@ -32,45 +27,79 @@ namespace TriggeredAnimation
             if (currentIndex > totalFrames)
                 currentIndex = totalFrames;
             else if (currentIndex < 0)
-                currentIndex = 0;
+                Reset();
 
             return Frames[currentIndex];
         }
 
-        public bool HasEnded()
+        public override bool HasEnded()
         {
             return currentIndex == totalFrames;
         }
     }
 
-    public class FrameChooser
+    public class ReverseFrameChooser : FrameController
     {
-        private int currentIndex;
-        private readonly Rectangle[] Frames;
-        private readonly int totalFrames;
         private int frameRate;
         private DateTime nextFrameTime;
 
-        public FrameChooser(int frameRate, params Rectangle[] Frames)
+        public ReverseFrameChooser(int frameRate, params Rectangle[] Frames) : base(Frames)
         {
             this.frameRate = frameRate;
-            currentIndex = 0;
-            this.Frames = Frames;
-            totalFrames = Frames.Length - 1;
+            currentIndex = totalFrames;
         }
 
-        public void Reset()
+        public override void Reset()
         {
-            currentIndex = 0;
+            currentIndex = totalFrames;
         }
 
-        public Rectangle GetNextFrame(DateTime now)
+        public override Rectangle GetNextFrame(DateTime now)
         {
             if (now < nextFrameTime)
                 return Frames[currentIndex];
 
             if (HasEnded())
-                currentIndex = 0;
+                Reset();
+
+            nextFrameTime = now.AddMilliseconds(frameRate);
+
+            currentIndex--;
+            if (currentIndex < 0)
+                Reset();
+
+            return Frames[currentIndex];
+        }
+
+        public override bool HasEnded()
+        {
+            return currentIndex == 0;
+        }
+    }
+
+    public class SequentialChooser : FrameController
+    {
+        private int frameRate;
+        private DateTime nextFrameTime;
+
+        public SequentialChooser(int frameRate, params Rectangle[] Frames) : base(Frames)
+        {
+            this.frameRate = frameRate;
+            currentIndex = 0;
+        }
+
+        public override void Reset()
+        {
+            currentIndex = 0;
+        }
+
+        public override Rectangle GetNextFrame(DateTime now)
+        {
+            if (now < nextFrameTime)
+                return Frames[currentIndex];
+
+            if (HasEnded())
+                Reset();
 
             nextFrameTime = now.AddMilliseconds(frameRate);
 
@@ -81,13 +110,36 @@ namespace TriggeredAnimation
             return Frames[currentIndex];
         }
 
-        public bool HasEnded()
+        public override bool HasEnded()
         {
             return currentIndex == totalFrames;
         }
+    }
 
-        public FrameChosserByScale AsScale(Func<float> GetScale) {
-            return new FrameChosserByScale(GetScale, Frames);
+    public abstract class FrameController
+    {
+        protected int currentIndex;
+        protected readonly Rectangle[] Frames;
+        protected int totalFrames { get; private set; }
+
+        public FrameController(Rectangle[] Frames)
+        {
+            this.Frames = Frames.ToArray();
+            totalFrames = Frames.Length - 1;
+        }
+
+        public abstract void Reset();
+        public abstract Rectangle GetNextFrame(DateTime now);
+        public abstract bool HasEnded();
+
+        public FrameController AsScale(Func<float> getCurrent)
+        {
+            return new FrameChosserByScale(getCurrent, Frames);
+        }
+
+        public FrameController AsReverse()
+        {
+            return new ReverseFrameChooser(60, Frames);
         }
     }
 }

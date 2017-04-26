@@ -5,88 +5,35 @@ using System.Collections.Generic;
 
 namespace TriggeredAnimation
 {
-    public class ParameterizedAnimationTransitionRule : AnimationTransitionRule
+    public class TriggeredAnimationTransitionRule : AnimationTransitionRule
     {
-        public Dictionary<string, string> Parameters { get; }
+        public string  TriggerName { get; }
 
-        public ParameterizedAnimationTransitionRule(
-            IAnimation Source,
-            IAnimation Target,
-            params KeyValuePair<string, string>[] parameters) : base(Source, Target)
+        public TriggeredAnimationTransitionRule(
+            SimpleAnimation Source,
+            SimpleAnimation Target,
+            string TriggerName) : base(Source, Target)
         {
-            Parameters = new Dictionary<string, string>();
-
-            foreach (var item in Parameters)
-            {
-                Parameters.Add(item.Key, item.Value);
-            }
+            this.TriggerName = TriggerName;
         }
     }
 
     public class AnimationTransitionRule
     {
-        public AnimationTransitionRule(IAnimation Source, IAnimation Target)
+        public AnimationTransitionRule(SimpleAnimation Source, SimpleAnimation Target)
         {
             this.Source = Source;
             this.Target = Target;
         }
 
-        public IAnimation Source { get; }
-        public IAnimation Target { get; }
+        public SimpleAnimation Source { get; }
+        public SimpleAnimation Target { get; }
     }
-
-    public interface IAnimation
-    {
-        void Draw(SpriteBatch batch, int x, int y, Color color);
-        void Reset();
-        bool HasEnded { get; }
-    }
-
-    public class ScaleAnimation : IAnimation
+    
+    public class SimpleAnimation
     {
         public Texture2D Texture { get; }
-        public FrameChosserByScale AnimationFrameChooser { get; }
-        public bool HasEnded
-        {
-            get
-            {
-                return AnimationFrameChooser.HasEnded();
-            }
-        }
-
-        public ScaleAnimation(
-            Texture2D Texture,
-            FrameChosserByScale AnimationFrameChooser)
-        {
-            this.Texture = Texture;
-            this.AnimationFrameChooser = AnimationFrameChooser;
-        }
-
-        public void Draw(SpriteBatch batch, int x, int y, Color color)
-        {
-            var frame = AnimationFrameChooser.GetNextFrame(DateTime.Now);
-
-            batch.Draw(
-                Texture,
-                new Rectangle(
-                    x,
-                    y,
-                    frame.Width,
-                    frame.Height),
-                frame,
-                color);
-        }
-
-        public void Reset()
-        {
-            AnimationFrameChooser.Reset();
-        }
-    }
-
-    public class SimpleAnimation : IAnimation
-    {
-        public Texture2D Texture { get; }
-        public FrameChooser AnimationFrameChooser { get; }
+        public FrameController AnimationFrameChooser { get; }
         public bool HasEnded
         {
             get
@@ -97,7 +44,7 @@ namespace TriggeredAnimation
 
         public SimpleAnimation(
             Texture2D Texture,
-            FrameChooser AnimationFrameChooser)
+            FrameController AnimationFrameChooser)
         {
             this.Texture = Texture;
             this.AnimationFrameChooser = AnimationFrameChooser;
@@ -122,32 +69,35 @@ namespace TriggeredAnimation
             AnimationFrameChooser.Reset();
         }
 
-        public ScaleAnimation AsScaleAnimation()
+        public SimpleAnimation AsScaleAnimation()
         {
             var AudioService = new AudioService();
-            return new ScaleAnimation(Texture,AnimationFrameChooser.AsScale(AudioService.GetCurrent));
+            return new SimpleAnimation(Texture,AnimationFrameChooser.AsScale(AudioService.GetCurrent));
+        }
+
+        public SimpleAnimation Reverse()
+        {
+            return new SimpleAnimation(Texture, AnimationFrameChooser.AsReverse());
         }
     }
 
     public class Animator
     {
         private AnimationTransitionRule[] Rules;
-        private IAnimation CurrentAnimation;
-        private Dictionary<string, string> Parameters;
+        private SimpleAnimation CurrentAnimation;
+        private List<string> Triggers;
 
         public Animator(params AnimationTransitionRule[] rules)
         {
             CurrentAnimation = rules[0].Source;
             Rules = rules;
-            Parameters = new Dictionary<string, string>();
+            Triggers = new List<string>();
         }
 
-        public void ChangeParameter(string key, string value)
+        public void ActivateTrigger(string triggerName)
         {
-            if (Parameters.ContainsKey(key) == false)
-                Parameters.Add(key, value);
-            else
-                Parameters[key] = value;
+
+            Triggers.Add(triggerName);
         }
 
         public void Draw(SpriteBatch batch, int x, int y, Color color)
@@ -156,22 +106,16 @@ namespace TriggeredAnimation
             {
                 if (rule.Source == CurrentAnimation)
                 {
-                    if (rule is ParameterizedAnimationTransitionRule)
+                    if (rule is TriggeredAnimationTransitionRule)
                     {
-                        var allRulesPassed = true;
-                        var ruleParameters = (rule as ParameterizedAnimationTransitionRule).Parameters;
-                        foreach (var key in ruleParameters.Keys)
-                        {
-                            if (Parameters.ContainsKey(key) == false
-                                || Parameters[key] != ruleParameters[key])
-                                allRulesPassed = false;
-                        }
-
-                        if (allRulesPassed)
-                        {
+                        var triggerName = (rule as TriggeredAnimationTransitionRule).TriggerName;
+         
+                        if (Triggers.Contains(triggerName))
+                        {                        
                             CurrentAnimation.Reset();
                             CurrentAnimation = rule.Target;
                             CurrentAnimation.Reset();
+                            break;
                         }
                     }
                     else
@@ -181,10 +125,12 @@ namespace TriggeredAnimation
                             CurrentAnimation.Reset();
                             CurrentAnimation = rule.Target;
                             CurrentAnimation.Reset();
+                            break;
                         }
                     }
                 }
             }
+            Triggers.Clear();
 
             CurrentAnimation.Draw(batch, x, y, color);
         }

@@ -35,7 +35,7 @@ namespace ConvertAnimationsFromXml
                 rectangles = rectangles.Remove(rectangles.Length - 1);
                 methods +=
 $@"
-        public static Animation Load_{group.Key.Replace(' ', '_')}(ContentManager content)
+        public static SimpleAnimation Load_{group.Key.Replace(' ', '_')}(ContentManager content)
         {{
             if (Texture == null)
                Texture = content.Load<Texture2D>(""{fileName}"");
@@ -44,7 +44,7 @@ $@"
                 {rectangles}
             }});
 
-            return new Animation(Texture, animation);
+            return new SimpleAnimation(Texture, animation);
         }}
 ";
             }

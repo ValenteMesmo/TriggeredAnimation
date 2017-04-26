@@ -26,9 +26,9 @@ namespace TriggeredAnimation
             base.Initialize();
             AudioService = new AudioService();
         }
-        IAnimation Cartolina_Corpo;
-        IAnimation Cartolina_pupila;
-        IAnimation Cartolina_Boca;
+        SimpleAnimation Cartolina_Corpo;
+        SimpleAnimation Cartolina_pupila;
+        SimpleAnimation Cartolina_Boca;
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -36,12 +36,20 @@ namespace TriggeredAnimation
             Cartolina_pupila = SpriteSheet_Carolina.Load_Pupila(Content);
             Cartolina_Boca = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
             Cartolina_Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
-            var Cartolina_PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
-            var Cartolina_PalpebrasBemAbertos = SpriteSheet_Carolina.Load_Palpebras_bem_abertas(Content);
-
+            var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
+            var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
+            var PalpebrasAbrindo = PalpebrasFechando.Reverse();
             Animator = new Animator(
-                new AnimationTransitionRule(Cartolina_Boca, Cartolina_PalpebrasBemAbertos)
-                , new AnimationTransitionRule(Cartolina_PalpebrasBemAbertos, Cartolina_Boca)
+                new TriggeredAnimationTransitionRule(
+                    PalpebrasAbertas, 
+                    PalpebrasFechando, 
+                    "piscar")
+                , new AnimationTransitionRule(
+                    PalpebrasFechando,
+                    PalpebrasAbrindo)
+                , new AnimationTransitionRule(
+                    PalpebrasAbrindo, 
+                    PalpebrasAbertas)
             );
 
         }
@@ -55,8 +63,15 @@ namespace TriggeredAnimation
             base.Update(gameTime);
         }
 
+        DateTime horaDePiscar;
         protected override void Draw(GameTime gameTime)
         {
+            if(horaDePiscar < DateTime.Now)
+            {
+                horaDePiscar = DateTime.Now.AddSeconds(8);
+                Animator.ActivateTrigger("piscar");
+            }
+
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
 
@@ -76,6 +91,7 @@ namespace TriggeredAnimation
                 , 105
                 , Color.White);
 
+            Animator.Draw(spriteBatch, 65, 68, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }
