@@ -68,9 +68,11 @@ namespace TriggeredAnimation
             easyY.Enqueue(gamePadState.ThumbSticks.Left.Y * 2);
             base.Update(gameTime);
         }
+
         FixedSizedQueue<float> easyX = new FixedSizedQueue<float>(20);
         FixedSizedQueue<float> easyY = new FixedSizedQueue<float>(15);
         DateTime horaDePiscar;
+
         protected override void Draw(GameTime gameTime)
         {
             if(horaDePiscar < DateTime.Now)

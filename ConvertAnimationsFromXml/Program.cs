@@ -39,7 +39,7 @@ $@"
         {{
             if (Texture == null)
                Texture = content.Load<Texture2D>(""{fileName}"");
-            var animation = new FrameChooser(60, new Rectangle[]
+            var animation = new SequentialFrameChooser(60, new Rectangle[]
             {{
                 {rectangles}
             }});

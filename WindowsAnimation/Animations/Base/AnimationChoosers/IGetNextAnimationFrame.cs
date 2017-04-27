@@ -77,12 +77,12 @@ namespace TriggeredAnimation
         }
     }
 
-    public class SequentialChooser : FrameController
+    public class SequentialFrameChooser : FrameController
     {
         private int frameRate;
         private DateTime nextFrameTime;
 
-        public SequentialChooser(int frameRate, params Rectangle[] Frames) : base(Frames)
+        public SequentialFrameChooser(int frameRate, params Rectangle[] Frames) : base(Frames)
         {
             this.frameRate = frameRate;
             currentIndex = 0;
