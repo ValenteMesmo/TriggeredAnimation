@@ -79,6 +79,11 @@ namespace TriggeredAnimation
         {
             return new SimpleAnimation(Texture, AnimationFrameChooser.AsReverse());
         }
+
+        public void SetFrameRate(int value)
+        {
+            AnimationFrameChooser.SetFrameRate(value);
+        }
     }
 
     public class Animator

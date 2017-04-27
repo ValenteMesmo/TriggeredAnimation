@@ -36,6 +36,10 @@ namespace TriggeredAnimation
         {
             return currentIndex == totalFrames;
         }
+
+        public override void SetFrameRate(int value)
+        {
+        }
     }
 
     public class ReverseFrameChooser : FrameController
@@ -74,6 +78,11 @@ namespace TriggeredAnimation
         public override bool HasEnded()
         {
             return currentIndex == 0;
+        }
+
+        public override void SetFrameRate(int value)
+        {
+            frameRate = value;
         }
     }
 
@@ -114,6 +123,11 @@ namespace TriggeredAnimation
         {
             return currentIndex == totalFrames;
         }
+
+        public override void SetFrameRate(int value)
+        {
+            frameRate = value;
+        }
     }
 
     public abstract class FrameController
@@ -129,6 +143,7 @@ namespace TriggeredAnimation
         }
 
         public abstract void Reset();
+        public abstract void SetFrameRate(int value);
         public abstract Rectangle GetNextFrame(DateTime now);
         public abstract bool HasEnded();
 

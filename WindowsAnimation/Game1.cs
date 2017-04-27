@@ -20,27 +20,30 @@ namespace TriggeredAnimation
         }
 
         AudioService AudioService;
-        Animator Animator;
+        Animator Palpebra;
 
         protected override void Initialize()
         {
             base.Initialize();
             AudioService = new AudioService();
         }
-        SimpleAnimation Cartolina_Corpo;
-        SimpleAnimation Cartolina_pupila;
-        SimpleAnimation Cartolina_Boca;
+        SimpleAnimation Corpo;
+        SimpleAnimation Pupila;
+        SimpleAnimation Boca;
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Cartolina_pupila = SpriteSheet_Carolina.Load_Pupila(Content);
-            Cartolina_Boca = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
-            Cartolina_Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
+            Pupila = SpriteSheet_Carolina.Load_Pupila(Content);
+            Boca = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
+            Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
             var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
             var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
-            Animator = new Animator(
+            PalpebrasAbrindo.SetFrameRate(10);
+            PalpebrasFechando.SetFrameRate(10);
+
+            Palpebra = new Animator(
                 new TriggeredAnimationTransitionRule(
                     PalpebrasAbertas, 
                     PalpebrasFechando, 
@@ -78,7 +81,7 @@ namespace TriggeredAnimation
             if(horaDePiscar < DateTime.Now)
             {
                 horaDePiscar = DateTime.Now.AddSeconds(8);
-                Animator.ActivateTrigger("piscar");
+                Palpebra.ActivateTrigger("piscar");
             }
             var x = easyX.Sum()/easyX.Limit;
             var y = easyY.Sum() / easyY.Limit;
@@ -86,20 +89,23 @@ namespace TriggeredAnimation
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
 
-            Cartolina_Corpo.Draw(spriteBatch, 50, 50, Color.White);
 
-            Cartolina_pupila.Draw(spriteBatch,
+            Corpo.Draw(spriteBatch, 50, 50, Color.White);
+
+            Pupila.Draw(spriteBatch,
                 75 + (int)(x),
-                80 - (int)(y),
+                82 - (int)(y),
                 Color.White);
 
-            Cartolina_Boca.Draw(
+            Boca.Draw(
                 spriteBatch
                 , 75
                 , 105
                 , Color.White);
 
-            Animator.Draw(spriteBatch, 65, 68, Color.White);
+            Palpebra.Draw(spriteBatch, 65, 68, Color.White);
+
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
