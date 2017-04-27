@@ -40,20 +40,34 @@ namespace TriggeredAnimation
             var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
             var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
+            var PalpebrasArregaladas = SpriteSheet_Carolina.Load_Palpebras_arregaladas(Content);
+            var PalpebrasArregalando = SpriteSheet_Carolina.Load_Palpebras_arregalando(Content);
+
             PalpebrasAbrindo.SetFrameRate(10);
             PalpebrasFechando.SetFrameRate(10);
 
             Palpebra = new Animator(
                 new TriggeredAnimationTransitionRule(
-                    PalpebrasAbertas, 
-                    PalpebrasFechando, 
+                    PalpebrasAbertas,
+                    PalpebrasFechando,
                     "piscar")
                 , new AnimationTransitionRule(
                     PalpebrasFechando,
                     PalpebrasAbrindo)
                 , new AnimationTransitionRule(
-                    PalpebrasAbrindo, 
+                    PalpebrasAbrindo,
                     PalpebrasAbertas)
+                , new FlaggedAnimationTransitionRule(
+                    PalpebrasAbertas,
+                    PalpebrasArregalando,
+                    "arregalar")
+                , new AnimationTransitionRule(
+                    PalpebrasArregalando,
+                    PalpebrasArregaladas)
+                , new UnFlaggedAnimationTransitionRule(
+                    PalpebrasArregaladas,
+                    PalpebrasFechando,
+                    "arregalar")
             );
 
         }
@@ -67,43 +81,61 @@ namespace TriggeredAnimation
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
 
-            easyX.Enqueue(gamePadState.ThumbSticks.Left.X * 5);
-            easyY.Enqueue(gamePadState.ThumbSticks.Left.Y * 2);
+            easy_eye_X.Set(gamePadState.ThumbSticks.Left.X * 3);
+            easy_eye_Y.Set(gamePadState.ThumbSticks.Left.Y * 1.5f);
+
+            easy_X.Set(gamePadState.ThumbSticks.Right.X * 5);
+            easy_Y.Set(-gamePadState.ThumbSticks.Right.Y * 3);
+
+            Palpebra.Flag("arregalar",gamePadState.Buttons.X == ButtonState.Pressed);
+
             base.Update(gameTime);
         }
 
-        FixedSizedQueue<float> easyX = new FixedSizedQueue<float>(20);
-        FixedSizedQueue<float> easyY = new FixedSizedQueue<float>(15);
+        EasyValue easy_eye_X = new EasyValue(20);
+        EasyValue easy_eye_Y = new EasyValue(15);
+
+        EasyValue easy_X = new EasyValue(10);
+        EasyValue easy_Y = new EasyValue(10);
         DateTime horaDePiscar;
 
         protected override void Draw(GameTime gameTime)
         {
-            if(horaDePiscar < DateTime.Now)
+            var bonusX = (int)easy_X.Get();
+            var bonusY = (int)easy_Y.Get();
+
+            if (horaDePiscar < DateTime.Now)
             {
                 horaDePiscar = DateTime.Now.AddSeconds(8);
                 Palpebra.ActivateTrigger("piscar");
             }
-            var x = easyX.Sum()/easyX.Limit;
-            var y = easyY.Sum() / easyY.Limit;
-          
+
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
 
 
-            Corpo.Draw(spriteBatch, 50, 50, Color.White);
+            Corpo.Draw(
+                spriteBatch,
+                bonusX + 50,
+                bonusY + 50,
+                Color.White);
 
             Pupila.Draw(spriteBatch,
-                75 + (int)(x),
-                82 - (int)(y),
+                bonusX + 75 + (int)(easy_eye_X.Get()),
+                bonusY + 82 - (int)(easy_eye_Y.Get()),
                 Color.White);
 
             Boca.Draw(
                 spriteBatch
-                , 75
-                , 105
+                , bonusX + 75
+                , bonusY + 105
                 , Color.White);
 
-            Palpebra.Draw(spriteBatch, 65, 68, Color.White);
+            Palpebra.Draw(
+                spriteBatch,
+                bonusX + 65,
+                bonusY + 68,
+                Color.White);
 
 
             spriteBatch.End();

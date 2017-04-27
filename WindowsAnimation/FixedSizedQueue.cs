@@ -6,6 +6,24 @@ using System.Collections.Generic;
 
 namespace TriggeredAnimation
 {
+    public class EasyValue 
+    {
+        private FixedSizedQueue<float> values;
+        public EasyValue(int Limit) 
+        {
+            values = new FixedSizedQueue<float>(Limit);
+        }
+
+        public void Set(float value) {
+            values.Enqueue(value);
+        }
+
+        public float Get()
+        {
+            return values.Sum() / values.Limit;
+        }
+    }
+
     public class FixedSizedQueue<T> : IOrderedEnumerable<T>
     {
        private ConcurrentQueue<T> q = new ConcurrentQueue<T>();
