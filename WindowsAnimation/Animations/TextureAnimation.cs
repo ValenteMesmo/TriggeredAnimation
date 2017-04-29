@@ -62,6 +62,9 @@ namespace TriggeredAnimation
             }
         }
 
+        public int X { get; set; }
+        public int Y { get; set; }
+
         public SimpleAnimation(
             Texture2D Texture,
             FrameController AnimationFrameChooser)
@@ -76,8 +79,8 @@ namespace TriggeredAnimation
             batch.Draw(
                 Texture,
                 new Rectangle(
-                    x,
-                    y,
+                    X + x,
+                    Y + y,
                     frame.Width,
                     frame.Height),
                 frame,
@@ -133,7 +136,7 @@ namespace TriggeredAnimation
             {
                 if (Flags.Contains(name))
                     return;
-                Flags.Add(name); 
+                Flags.Add(name);
             }
             else
             {

@@ -41,10 +41,16 @@ namespace TriggeredAnimation
             var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
             var PalpebrasArregaladas = SpriteSheet_Carolina.Load_Palpebras_arregaladas(Content);
+            PalpebrasArregaladas.Y = -5;
             var PalpebrasArregalando = SpriteSheet_Carolina.Load_Palpebras_arregalando(Content);
-
+            var PalpebrasDesarregalando = PalpebrasArregalando.Reverse();
+            PalpebrasArregalando.Y = -5;
+            PalpebrasDesarregalando.Y = -5;
+            
             PalpebrasAbrindo.SetFrameRate(10);
             PalpebrasFechando.SetFrameRate(10);
+            PalpebrasArregalando.SetFrameRate(10);
+            PalpebrasDesarregalando.SetFrameRate(10);
 
             Palpebra = new Animator(
                 new TriggeredAnimationTransitionRule(
@@ -66,8 +72,11 @@ namespace TriggeredAnimation
                     PalpebrasArregaladas)
                 , new UnFlaggedAnimationTransitionRule(
                     PalpebrasArregaladas,
-                    PalpebrasFechando,
+                    PalpebrasDesarregalando,
                     "arregalar")
+                , new AnimationTransitionRule(
+                    PalpebrasDesarregalando,
+                    PalpebrasAbertas)
             );
 
         }
@@ -79,6 +88,8 @@ namespace TriggeredAnimation
         protected override void Update(GameTime gameTime)
         {
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            var keyboardState = Keyboard.GetState();
+
 
 
             easy_eye_X.Set(gamePadState.ThumbSticks.Left.X * 3);
@@ -87,7 +98,9 @@ namespace TriggeredAnimation
             easy_X.Set(gamePadState.ThumbSticks.Right.X * 5);
             easy_Y.Set(-gamePadState.ThumbSticks.Right.Y * 3);
 
-            Palpebra.Flag("arregalar",gamePadState.Buttons.X == ButtonState.Pressed);
+            Palpebra.Flag("arregalar",
+                gamePadState.Buttons.X == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.X));
 
             base.Update(gameTime);
         }
