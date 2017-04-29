@@ -1,19 +1,77 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
+using System;
+using System.Threading;
 
 namespace ConvertAnimationsFromXml
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public  static void Main(string[] args)
+        {
+            Run();
+        }
+
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+        public static void Run()
         {
             var currentDir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            foreach (var file in currentDir.GetFiles())
-            {
-                if (file.Extension.ToLower() == ".json".ToLower())
-                    ConvertFile(file);
-            }
+            Watch(currentDir.FullName);
+            //foreach (var file in currentDir.GetFiles())
+            //{
+            //    if (file.Extension.ToLower() == ".json".ToLower())
+            //        ConvertFile(file);
+            //}
+        }
+
+        private static void Watch(string fullName)
+        {
+
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = fullName;
+            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            // Only watch text files.
+            watcher.Filter = "*.json";
+
+            // Add event handlers.
+            watcher.Changed += new FileSystemEventHandler(OnChanged);
+            watcher.Created += new FileSystemEventHandler(OnChanged);
+            watcher.Deleted += new FileSystemEventHandler(OnDeleted);
+            watcher.Renamed += new RenamedEventHandler(OnRenamed);
+
+            // Begin watching.
+            watcher.EnableRaisingEvents = true;
+
+            // Wait for the user to quit the program.
+            Console.WriteLine("Press \'q\' to quit the sample.");
+            while (Console.Read() != 'q') ;
+        }
+
+        private static  void OnChanged(object source, FileSystemEventArgs e)
+        {
+            Thread.Sleep(2000);
+            ConvertFile(new FileInfo(e.FullPath));
+            Console.WriteLine($"Arquivo atualizado: {Path.GetFileName(e.FullPath)}");
+        }
+
+        private static void OnRenamed(object source, RenamedEventArgs e)
+        {
+            Thread.Sleep(2000);
+
+            File.Delete(e.OldFullPath);
+            Console.WriteLine($"Arquivo renomeado: {Path.GetFileName(e.OldFullPath)} > {Path.GetFileName(e.FullPath)}");
+            ConvertFile(new FileInfo(e.FullPath));
+        }
+
+        private static void OnDeleted(object source, FileSystemEventArgs e)
+        {
+            Thread.Sleep(2000);
+
+            Console.WriteLine($"Arquivo excluido: {Path.GetFileName(e.FullPath)}");
+            File.Delete(e.FullPath);
         }
 
         private static void ConvertFile(FileInfo file)

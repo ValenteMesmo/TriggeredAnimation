@@ -35,7 +35,11 @@ namespace TriggeredAnimation
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Pupila = SpriteSheet_Carolina.Load_Pupila(Content);
+            Pupila.Y = 3;
+            Pupila.Y = 1;
             Boca = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
+            //Boca.Y = -40;
+            //Boca.X = -12;
             Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
             var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
             var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
@@ -138,17 +142,19 @@ namespace TriggeredAnimation
                 bonusY + 82 - (int)(easy_eye_Y.Get()),
                 Color.White);
 
-            Boca.Draw(
-                spriteBatch
-                , bonusX + 80
-                , bonusY + 105
-                , Color.White);
 
             Palpebra.Draw(
                 spriteBatch,
                 bonusX + 65,
                 bonusY + 68,
                 Color.White);
+
+
+            Boca.Draw(
+                spriteBatch
+                , bonusX + 80
+                , bonusY + 105
+                , Color.White);
 
 
             spriteBatch.End();
