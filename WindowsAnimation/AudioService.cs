@@ -5,7 +5,7 @@ namespace TriggeredAnimation
 {
     public class AudioService
     {
-        FixedSizedQueue<float> values = new FixedSizedQueue<float>(300);
+        FixedSizedQueue<float> values = new FixedSizedQueue<float>(400);
         public AudioService()
         {
             //int waveInDevices = WaveIn.DeviceCount;

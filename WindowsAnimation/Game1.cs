@@ -140,7 +140,7 @@ namespace TriggeredAnimation
 
             Boca.Draw(
                 spriteBatch
-                , bonusX + 75
+                , bonusX + 80
                 , bonusY + 105
                 , Color.White);
 

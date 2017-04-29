@@ -20,7 +20,7 @@ namespace TriggeredAnimation
 
         public override Rectangle GetNextFrame(DateTime now)
         {
-            var index = (GetScale() * (totalFrames)) / 0.9f;
+            var index = (GetScale() * (totalFrames)) / 0.04f;
 
             currentIndex = (int)Math.Floor(index);
 
