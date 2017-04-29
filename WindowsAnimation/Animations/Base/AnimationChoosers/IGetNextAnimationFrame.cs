@@ -34,7 +34,7 @@ namespace TriggeredAnimation
 
         public override bool HasEnded()
         {
-            return currentIndex == totalFrames;
+            return currentIndex == 0;
         }
 
         public override void SetFrameRate(int value)
