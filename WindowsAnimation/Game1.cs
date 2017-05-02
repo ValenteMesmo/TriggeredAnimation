@@ -43,6 +43,7 @@ namespace TriggeredAnimation
             Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
             var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
             var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
+            //PalpebrasAbertas.X = -1;
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
             var PalpebrasArregaladas = SpriteSheet_Carolina.Load_Palpebras_arregaladas(Content);
             PalpebrasArregaladas.Y = -5;
@@ -124,7 +125,7 @@ namespace TriggeredAnimation
             if (horaDePiscar < DateTime.Now)
             {
                 horaDePiscar = DateTime.Now.AddSeconds(8);
-                Palpebra.ActivateTrigger("piscar22222222222222222");
+                Palpebra.ActivateTrigger("piscar");
             }
 
             GraphicsDevice.Clear(Color.Blue);
