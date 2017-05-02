@@ -20,12 +20,12 @@ namespace TriggeredAnimation
 
         public override Rectangle GetNextFrame(DateTime now)
         {
-            var index = (GetScale() * (totalFrames)) / 0.04f;
+            var index = (GetScale() * (lastIndex)) / 0.04f;
 
             currentIndex = (int)Math.Floor(index);
 
-            if (currentIndex > totalFrames)
-                currentIndex = totalFrames;
+            if (currentIndex > lastIndex)
+                currentIndex = lastIndex;
             else if (currentIndex < 0)
                 Reset();
 
@@ -50,12 +50,12 @@ namespace TriggeredAnimation
         public ReverseFrameChooser(int frameRate, params Rectangle[] Frames) : base(Frames)
         {
             this.frameRate = frameRate;
-            currentIndex = totalFrames;
+            currentIndex = lastIndex;
         }
 
         public override void Reset()
         {
-            currentIndex = totalFrames;
+            currentIndex = lastIndex;
         }
 
         public override Rectangle GetNextFrame(DateTime now)
@@ -65,13 +65,16 @@ namespace TriggeredAnimation
 
             if (HasEnded())
                 Reset();
+            else {
+                currentIndex--;
+                if (currentIndex < 0)
+                    Reset();
+
+            }
 
             nextFrameTime = now.AddMilliseconds(frameRate);
 
-            currentIndex--;
-            if (currentIndex < 0)
-                Reset();
-
+       
             return Frames[currentIndex];
         }
 
@@ -109,19 +112,21 @@ namespace TriggeredAnimation
 
             if (HasEnded())
                 Reset();
+            else
+            {
+                currentIndex++;
+                if (currentIndex > lastIndex)
+                    currentIndex = lastIndex;
+            }
 
             nextFrameTime = now.AddMilliseconds(frameRate);
-
-            currentIndex++;
-            if (currentIndex > totalFrames)
-                currentIndex = totalFrames;
 
             return Frames[currentIndex];
         }
 
         public override bool HasEnded()
         {
-            return currentIndex == totalFrames;
+            return currentIndex == lastIndex;
         }
 
         public override void SetFrameRate(int value)
@@ -134,12 +139,12 @@ namespace TriggeredAnimation
     {
         protected int currentIndex;
         protected readonly Rectangle[] Frames;
-        protected int totalFrames { get; private set; }
+        protected int lastIndex { get; private set; }
 
         public FrameController(Rectangle[] Frames)
         {
             this.Frames = Frames.ToArray();
-            totalFrames = Frames.Length - 1;
+            lastIndex = Frames.Length - 1;
         }
 
         public abstract void Reset();

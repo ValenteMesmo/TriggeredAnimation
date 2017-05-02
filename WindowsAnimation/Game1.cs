@@ -124,7 +124,7 @@ namespace TriggeredAnimation
             if (horaDePiscar < DateTime.Now)
             {
                 horaDePiscar = DateTime.Now.AddSeconds(8);
-                Palpebra.ActivateTrigger("piscar");
+                Palpebra.ActivateTrigger("piscar22222222222222222");
             }
 
             GraphicsDevice.Clear(Color.Blue);
