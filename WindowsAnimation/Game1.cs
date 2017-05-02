@@ -20,7 +20,6 @@ namespace TriggeredAnimation
         }
 
         AudioService AudioService;
-        Animator Palpebra;
 
         protected override void Initialize()
         {
@@ -29,7 +28,8 @@ namespace TriggeredAnimation
         }
         SimpleAnimation Corpo;
         SimpleAnimation Pupila;
-        SimpleAnimation Boca;
+        Animator Boca;
+        Animator Palpebra;
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -37,13 +37,28 @@ namespace TriggeredAnimation
             Pupila = SpriteSheet_Carolina.Load_Pupila(Content);
             Pupila.Y = 3;
             Pupila.Y = 1;
-            Boca = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
-            //Boca.Y = -40;
-            //Boca.X = -12;
+
+            var Boca_padrao = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
+            var Boca_entristecendo = SpriteSheet_Carolina.Load_Boca_entristecendo(Content);
+            var Boca_desentristecendo = Boca_entristecendo.Reverse();
+            var Boca_triste = SpriteSheet_Carolina.Load_Boca_triste(Content).AsScaleAnimation();
+
+            Boca = new Animator(
+                new FlaggedAnimationTransitionRule(Boca_padrao,Boca_entristecendo, "triste")
+                ,new AnimationTransitionRule(Boca_entristecendo,Boca_triste)
+                ,new UnFlaggedAnimationTransitionRule(Boca_triste, Boca_desentristecendo, "triste")
+                , new AnimationTransitionRule(Boca_desentristecendo, Boca_padrao)
+
+            );
             Corpo = SpriteSheet_Carolina.Load_Corpo(Content);
+
+            CreatePalpebraAnimator();
+        }
+
+        private void CreatePalpebraAnimator()
+        {
             var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content);
             var PalpebrasAbertas = SpriteSheet_Carolina.Load_Palpebras_abertas(Content);
-            //PalpebrasAbertas.X = -1;
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
             var PalpebrasArregaladas = SpriteSheet_Carolina.Load_Palpebras_arregaladas(Content);
             PalpebrasArregaladas.Y = -5;
@@ -51,7 +66,7 @@ namespace TriggeredAnimation
             var PalpebrasDesarregalando = PalpebrasArregalando.Reverse();
             PalpebrasArregalando.Y = -5;
             PalpebrasDesarregalando.Y = -5;
-            
+
             PalpebrasAbrindo.SetFrameRate(10);
             PalpebrasFechando.SetFrameRate(10);
             PalpebrasArregalando.SetFrameRate(10);
@@ -83,7 +98,6 @@ namespace TriggeredAnimation
                     PalpebrasDesarregalando,
                     PalpebrasAbertas)
             );
-
         }
 
         protected override void UnloadContent()
@@ -106,6 +120,9 @@ namespace TriggeredAnimation
             Palpebra.Flag("arregalar",
                 gamePadState.Buttons.X == ButtonState.Pressed
                 || keyboardState.IsKeyDown(Keys.X));
+            Boca.Flag("triste",
+                            gamePadState.Buttons.X == ButtonState.Pressed
+                            || keyboardState.IsKeyDown(Keys.Z));
 
             base.Update(gameTime);
         }
