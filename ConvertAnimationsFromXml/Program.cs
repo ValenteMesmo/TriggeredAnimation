@@ -19,11 +19,6 @@ namespace ConvertAnimationsFromXml
         {
             var currentDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             Watch(currentDir.FullName);
-            //foreach (var file in currentDir.GetFiles())
-            //{
-            //    if (file.Extension.ToLower() == ".json".ToLower())
-            //        ConvertFile(file);
-            //}
         }
 
         private static void Watch(string fullName)
@@ -33,20 +28,16 @@ namespace ConvertAnimationsFromXml
             watcher.Path = fullName;
             watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
                | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            // Only watch text files.
             watcher.Filter = "*.json";
 
-            // Add event handlers.
             watcher.Changed += new FileSystemEventHandler(OnChanged);
             watcher.Created += new FileSystemEventHandler(OnChanged);
             watcher.Deleted += new FileSystemEventHandler(OnDeleted);
             watcher.Renamed += new RenamedEventHandler(OnRenamed);
 
-            // Begin watching.
             watcher.EnableRaisingEvents = true;
 
-            // Wait for the user to quit the program.
-            Console.WriteLine("Press \'q\' to quit the sample.");
+            Console.WriteLine("Press \'q\' to quit.");
             while (Console.Read() != 'q') ;
         }
 
@@ -93,7 +84,7 @@ namespace ConvertAnimationsFromXml
                 rectangles = rectangles.Remove(rectangles.Length - 1);
                 methods +=
 $@"
-        public static SimpleAnimation Load_{group.Key.Replace(' ', '_')}(ContentManager content)
+        public static SimpleAnimation Load_{group.Key.Replace(' ', '_')}(ContentManager content, int X = 0, int Y = 0)
         {{
             if (Texture == null)
                Texture = content.Load<Texture2D>(""{fileName}"");
@@ -102,7 +93,7 @@ $@"
                 {rectangles}
             }});
 
-            return new SimpleAnimation(Texture, animation);
+            return new SimpleAnimation(Texture, animation, X, Y);
         }}
 ";
             }

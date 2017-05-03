@@ -67,13 +67,17 @@ namespace TriggeredAnimation
 
         public SimpleAnimation(
             Texture2D Texture,
-            FrameController AnimationFrameChooser)
+            FrameController AnimationFrameChooser,
+            int X,
+            int Y)
         {
             this.Texture = Texture;
             this.AnimationFrameChooser = AnimationFrameChooser;
+            this.X = X;
+            this.Y = Y;
         }
 
-        public void Draw(SpriteBatch batch, int x, int y, Color color)
+        public void Draw(SpriteBatch batch, int x = 0, int y = 0)
         {
             var frame = AnimationFrameChooser.GetNextFrame(DateTime.Now);
             batch.Draw(
@@ -84,7 +88,7 @@ namespace TriggeredAnimation
                     frame.Width,
                     frame.Height),
                 frame,
-                color);
+                Color.White);
         }
 
         public void Reset()
@@ -95,12 +99,12 @@ namespace TriggeredAnimation
         public SimpleAnimation AsScaleAnimation()
         {
             var AudioService = new AudioService();
-            return new SimpleAnimation(Texture, AnimationFrameChooser.AsScale(AudioService.GetCurrent));
+            return new SimpleAnimation(Texture, AnimationFrameChooser.AsScale(AudioService.GetCurrent), X, Y);
         }
 
         public SimpleAnimation Reverse()
         {
-            return new SimpleAnimation(Texture, AnimationFrameChooser.AsReverse());
+            return new SimpleAnimation(Texture, AnimationFrameChooser.AsReverse(), X, Y);
         }
 
         public void SetFrameRate(int value)
@@ -115,6 +119,14 @@ namespace TriggeredAnimation
         private SimpleAnimation CurrentAnimation;
         private List<string> Triggers;
         private List<string> Flags;
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public Animator(int X, int Y, params AnimationTransitionRule[] rules) : this(rules)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
 
         public Animator(params AnimationTransitionRule[] rules)
         {
@@ -145,7 +157,7 @@ namespace TriggeredAnimation
             }
         }
 
-        public void Draw(SpriteBatch batch, int x, int y, Color color)
+        public void Draw(SpriteBatch batch, int x, int y)
         {
             foreach (var rule in Rules)
             {
@@ -201,7 +213,7 @@ namespace TriggeredAnimation
             }
             Triggers.Clear();
 
-            CurrentAnimation.Draw(batch, x, y, color);
+            CurrentAnimation.Draw(batch, X + x, Y + y);
         }
     }
 }

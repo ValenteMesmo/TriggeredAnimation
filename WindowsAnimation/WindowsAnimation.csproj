@@ -41,7 +41,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Animations\Base\AnimationChoosers\IGetNextAnimationFrame.cs" />
+    <Compile Include="Animations\Base\AnimationChoosers\FrameChosserByScale.cs" />
+    <Compile Include="Animations\Base\AnimationChoosers\FrameController.cs" />
+    <Compile Include="Animations\Base\AnimationChoosers\ReverseFrameChooser.cs" />
+    <Compile Include="Animations\Base\AnimationChoosers\SequentialFrameChooser.cs" />
     <Compile Include="AudioService.cs" />
     <Compile Include="Content\SpriteSheet_Carolina.cs" />
     <Compile Include="FixedSizedQueue.cs" />
