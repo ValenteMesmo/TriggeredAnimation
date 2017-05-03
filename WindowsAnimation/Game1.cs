@@ -38,7 +38,7 @@ namespace TriggeredAnimation
             Pupila.Y = 3;
             Pupila.Y = 1;
 
-            var Boca_padrao = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();
+            var Boca_padrao = SpriteSheet_Carolina.Load_Boca(Content).AsScaleAnimation();            
             var Boca_entristecendo = SpriteSheet_Carolina.Load_Boca_entristecendo(Content);
             var Boca_desentristecendo = Boca_entristecendo.Reverse();
             var Boca_triste = SpriteSheet_Carolina.Load_Boca_triste(Content).AsScaleAnimation();
@@ -109,20 +109,19 @@ namespace TriggeredAnimation
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             var keyboardState = Keyboard.GetState();
 
+            easy_eye_X.Set(gamePadState.ThumbSticks.Right.X * 4f);
+            easy_eye_Y.Set(gamePadState.ThumbSticks.Right.Y * 3f);
 
-
-            easy_eye_X.Set(gamePadState.ThumbSticks.Left.X * 3);
-            easy_eye_Y.Set(gamePadState.ThumbSticks.Left.Y * 1.5f);
-
-            easy_X.Set(gamePadState.ThumbSticks.Right.X * 5);
-            easy_Y.Set(-gamePadState.ThumbSticks.Right.Y * 3);
+            easy_X.Set(gamePadState.ThumbSticks.Left.X * 5);
+            easy_Y.Set(-gamePadState.ThumbSticks.Left.Y * 3);
 
             Palpebra.Flag("arregalar",
                 gamePadState.Buttons.X == ButtonState.Pressed
                 || keyboardState.IsKeyDown(Keys.X));
+
             Boca.Flag("triste",
-                            gamePadState.Buttons.X == ButtonState.Pressed
-                            || keyboardState.IsKeyDown(Keys.Z));
+                gamePadState.Buttons.A == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.Z));
 
             base.Update(gameTime);
         }
