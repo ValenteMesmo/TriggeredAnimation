@@ -24,6 +24,7 @@ namespace TriggeredAnimation
             base.Initialize();
             AudioService = new AudioService();
         }
+
         SimpleAnimation Corpo;
         SimpleAnimation Pupila;
         SimpleAnimation Controle;
@@ -31,6 +32,7 @@ namespace TriggeredAnimation
         Animator Palpebra;
         SimpleAnimation Mao_esquerda;
         SimpleAnimation Mao_direita;
+
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -114,8 +116,8 @@ namespace TriggeredAnimation
             easy_eye_X.Set(gamePadState.ThumbSticks.Right.X * 4f);
             easy_eye_Y.Set(gamePadState.ThumbSticks.Right.Y * 3f);
 
-            easy_X.Set(gamePadState.ThumbSticks.Left.X * 5);
-            easy_Y.Set(-gamePadState.ThumbSticks.Left.Y * 3);
+            easy_X.Set(gamePadState.ThumbSticks.Left.X * 6);
+            easy_Y.Set(-gamePadState.ThumbSticks.Left.Y * 8);
 
             Palpebra.Flag("arregalar",
                 gamePadState.Buttons.X == ButtonState.Pressed
@@ -153,16 +155,18 @@ namespace TriggeredAnimation
             Corpo.Draw(spriteBatch);
 
             Pupila.Draw(spriteBatch,
-                bonusX + (int)(easy_eye_X.Get()),
-                bonusY - (int)(easy_eye_Y.Get()));
+                (int)(easy_eye_X.Get()),
+                 (int)(easy_eye_Y.Get()));
 
-            Palpebra.Draw(spriteBatch, bonusX, bonusY);
 
-            Boca.Draw(spriteBatch, bonusX, bonusY);
+            Palpebra.Draw(spriteBatch, 0, 0);
 
-            Controle.Draw(spriteBatch);
-            Mao_esquerda.Draw(spriteBatch);
-            Mao_direita.Draw(spriteBatch);
+
+            Boca.Draw(spriteBatch, 0, 0);
+
+            Controle.Draw(spriteBatch, bonusX, bonusY);
+            Mao_esquerda.Draw(spriteBatch, bonusX, bonusY);
+            Mao_direita.Draw(spriteBatch, bonusX, bonusY);
 
             spriteBatch.End();
             base.Draw(gameTime);
