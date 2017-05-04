@@ -66,14 +66,9 @@ namespace TriggeredAnimation
             var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content, 4,4);
             var PalpebrasAbertas = noAnimation;
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
-            var PalpebrasArregaladas = SpriteSheet_Carolina.Load_Palpebras_arregaladas(Content, 0, -5);
-            var PalpebrasArregalando = SpriteSheet_Carolina.Load_Palpebras_arregalando(Content, 0, -5);
-            var PalpebrasDesarregalando = PalpebrasArregalando.Reverse();
 
             PalpebrasAbrindo.SetFrameRate(10);
             PalpebrasFechando.SetFrameRate(10);
-            PalpebrasArregalando.SetFrameRate(10);
-            PalpebrasDesarregalando.SetFrameRate(10);
 
             Palpebra = new Animator(
                 65, 68,
@@ -86,20 +81,6 @@ namespace TriggeredAnimation
                     PalpebrasAbrindo)
                 , new AnimationTransitionRule(
                     PalpebrasAbrindo,
-                    PalpebrasAbertas)
-                , new FlaggedAnimationTransitionRule(
-                    PalpebrasAbertas,
-                    PalpebrasArregalando,
-                    "arregalar")
-                , new AnimationTransitionRule(
-                    PalpebrasArregalando,
-                    PalpebrasArregaladas)
-                , new UnFlaggedAnimationTransitionRule(
-                    PalpebrasArregaladas,
-                    PalpebrasDesarregalando,
-                    "arregalar")
-                , new AnimationTransitionRule(
-                    PalpebrasDesarregalando,
                     PalpebrasAbertas)
             );
         }
@@ -158,9 +139,7 @@ namespace TriggeredAnimation
                 (int)(easy_eye_X.Get()),
                  (int)(easy_eye_Y.Get()));
 
-
             Palpebra.Draw(spriteBatch, 0, 0);
-
 
             Boca.Draw(spriteBatch, 0, 0);
 
