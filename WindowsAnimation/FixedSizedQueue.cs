@@ -19,9 +19,14 @@ namespace TriggeredAnimation
             values.Enqueue(value);
         }
 
-        public float Get()
+        public float GetValue()
         {
             return values.Sum() / values.Limit;
+        }
+
+        public static implicit operator int(EasyValue d) 
+        {
+            return (int)d.GetValue();
         }
     }
 

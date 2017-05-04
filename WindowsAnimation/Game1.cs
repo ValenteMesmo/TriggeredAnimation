@@ -50,26 +50,26 @@ namespace TriggeredAnimation
                 , new AnimationTransitionRule(Boca_entristecendo, Boca_triste)
                 , new UnFlaggedAnimationTransitionRule(Boca_triste, Boca_desentristecendo, "triste")
                 , new AnimationTransitionRule(Boca_desentristecendo, Boca_padrao)
-
             );
+
             Corpo = SpriteSheet_Carolina.Load_Corpo(Content, 50, 50);
-            Controle = SpriteSheet_Carolina.Load_Controle(Content, 65, 130);
+            Controle = SpriteSheet_Carolina.Load_Controle(Content, 65, 120);
             Mao_esquerda = CreateMaoEsquerda();
             Mao_direita = CreateMaoDireita();
             CreatePalpebraAnimator();
         }
 
         private Animator CreateMaoDireita()
-        {            
-            var Mao_00 = SpriteSheet_Carolina.Load_Mao_direita_0_0(Content, 108, 125);
-            var Mao_01 = SpriteSheet_Carolina.Load_Mao_direita_0_1(Content, 108, 125);
-            var Mao_10 = SpriteSheet_Carolina.Load_Mao_direita_1_0(Content, 110, 125);
-            var Mao_11 = SpriteSheet_Carolina.Load_Mao_direita_1_1(Content, 109, 125);
+        {
+            var Mao_00 = SpriteSheet_Carolina.Load_Mao_direita_0_0(Content, 108, 115);
+            var Mao_01 = SpriteSheet_Carolina.Load_Mao_direita_0_1(Content, 108, 115);
+            var Mao_10 = SpriteSheet_Carolina.Load_Mao_direita_1_0(Content, 110, 115);
+            var Mao_11 = SpriteSheet_Carolina.Load_Mao_direita_1_1(Content, 109, 115);
 
             return new Animator(
                 new FlaggedAnimationTransitionRule(Mao_00, Mao_10, "r1")
-                ,new FlaggedAnimationTransitionRule(Mao_00, Mao_01, "r2")
-                                
+                , new FlaggedAnimationTransitionRule(Mao_00, Mao_01, "r2")
+
                 , new FlaggedAnimationTransitionRule(Mao_10, Mao_11, "r2")
                 , new UnFlaggedAnimationTransitionRule(Mao_10, Mao_00, "r1")
 
@@ -83,10 +83,10 @@ namespace TriggeredAnimation
 
         private Animator CreateMaoEsquerda()
         {
-            var Mao_00 = SpriteSheet_Carolina.Load_Mao_esquerda_0_0(Content, 55, 125);
-            var Mao_01 = SpriteSheet_Carolina.Load_Mao_esquerda_0_1(Content, 55, 125);
-            var Mao_10 = SpriteSheet_Carolina.Load_Mao_esquerda_1_0(Content, 55, 125);
-            var Mao_11 = SpriteSheet_Carolina.Load_Mao_esquerda_1_1(Content, 55, 125);
+            var Mao_00 = SpriteSheet_Carolina.Load_Mao_esquerda_0_0(Content, 55, 115);
+            var Mao_01 = SpriteSheet_Carolina.Load_Mao_esquerda_0_1(Content, 55, 115);
+            var Mao_10 = SpriteSheet_Carolina.Load_Mao_esquerda_1_0(Content, 55, 115);
+            var Mao_11 = SpriteSheet_Carolina.Load_Mao_esquerda_1_1(Content, 55, 115);
 
             return new Animator(
                 new FlaggedAnimationTransitionRule(Mao_00, Mao_10, "l1")
@@ -107,7 +107,7 @@ namespace TriggeredAnimation
         {
             var noAnimation = new EmptyAnimation();
 
-            var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content, 4,4);
+            var PalpebrasFechando = SpriteSheet_Carolina.Load_Palpebras_fechando(Content, 4, 4);
             var PalpebrasAbertas = noAnimation;
             var PalpebrasAbrindo = PalpebrasFechando.Reverse();
 
@@ -138,11 +138,22 @@ namespace TriggeredAnimation
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.Two);
             var keyboardState = Keyboard.GetState();
 
-            easy_eye_X.Set(gamePadState.ThumbSticks.Right.X * 5f);
-            easy_eye_Y.Set(gamePadState.ThumbSticks.Right.Y * 5f);
+            Body_X.Set(gamePadState.ThumbSticks.Right.X * 5f);
+            Body_Y.Set(gamePadState.ThumbSticks.Right.Y * 5f);
 
-            easy_X.Set(gamePadState.ThumbSticks.Left.X * 6);
-            easy_Y.Set(-gamePadState.ThumbSticks.Left.Y * 8);
+            Hand_X.Set(gamePadState.ThumbSticks.Left.X * 3);
+            Hand_Y.Set(-gamePadState.ThumbSticks.Left.Y * 8);
+
+            Eye_X.Set(
+                (gamePadState.ThumbSticks.Left.X
+                - gamePadState.ThumbSticks.Right.X)
+                *2
+                );
+            Eye_Y.Set((
+                gamePadState.ThumbSticks.Left.Y
+                - gamePadState.ThumbSticks.Right.Y
+                )*2
+                );
 
             Palpebra.Flag("arregalar",
                 gamePadState.Buttons.X == ButtonState.Pressed
@@ -152,8 +163,8 @@ namespace TriggeredAnimation
                 gamePadState.Buttons.A == ButtonState.Pressed
                 || keyboardState.IsKeyDown(Keys.Z));
 
-            Mao_direita.Flag("r1",gamePadState.Buttons.RightShoulder == ButtonState.Pressed);
-            Mao_direita.Flag("r2", gamePadState.Triggers.Right>0);
+            Mao_direita.Flag("r1", gamePadState.Buttons.RightShoulder == ButtonState.Pressed);
+            Mao_direita.Flag("r2", gamePadState.Triggers.Right > 0);
 
             Mao_esquerda.Flag("l1", gamePadState.Buttons.LeftShoulder == ButtonState.Pressed);
             Mao_esquerda.Flag("l2", gamePadState.Triggers.Left > 0);
@@ -161,19 +172,20 @@ namespace TriggeredAnimation
             base.Update(gameTime);
         }
 
-        EasyValue easy_eye_X = new EasyValue(20);
-        EasyValue easy_eye_Y = new EasyValue(15);
+        EasyValue Body_X = new EasyValue(20);
+        EasyValue Body_Y = new EasyValue(15);
 
-        EasyValue easy_X = new EasyValue(10);
-        EasyValue easy_Y = new EasyValue(10);
+        EasyValue Hand_X = new EasyValue(10);
+        EasyValue Hand_Y = new EasyValue(10);
+
+        EasyValue Eye_X = new EasyValue(10);
+        EasyValue Eye_Y = new EasyValue(10);
+
         DateTime horaDePiscar;
         Random Random = new Random();
 
         protected override void Draw(GameTime gameTime)
         {
-            var bonusX = (int)easy_X.Get();
-            var bonusY = (int)easy_Y.Get();
-
             if (horaDePiscar < DateTime.Now)
             {
                 horaDePiscar = DateTime.Now.AddSeconds(Random.Next(1, 10));
@@ -183,19 +195,17 @@ namespace TriggeredAnimation
             GraphicsDevice.Clear(Color.Blue);
             spriteBatch.Begin();
 
-            Corpo.Draw(spriteBatch);
+            Corpo.Draw(spriteBatch, Body_X, Body_Y);
+            
+            Pupila.Draw(spriteBatch, Body_X + Eye_X, Body_Y + Eye_Y);
 
-            Pupila.Draw(spriteBatch,
-                (int)(easy_eye_X.Get()),
-                 (int)(easy_eye_Y.Get()));
+            Palpebra.Draw(spriteBatch, Body_X, Body_Y);
 
-            Palpebra.Draw(spriteBatch, 0, 0);
+            Boca.Draw(spriteBatch, Body_X, Body_Y);
 
-            Boca.Draw(spriteBatch, 0, 0);
-
-            Controle.Draw(spriteBatch, bonusX, bonusY);
-            Mao_esquerda.Draw(spriteBatch, bonusX, bonusY);
-            Mao_direita.Draw(spriteBatch, bonusX, bonusY);
+            Controle.Draw(spriteBatch, Hand_X, Hand_Y);
+            Mao_esquerda.Draw(spriteBatch, Hand_X, Hand_Y);
+            Mao_direita.Draw(spriteBatch, Hand_X, Hand_Y);
 
             spriteBatch.End();
             base.Draw(gameTime);
