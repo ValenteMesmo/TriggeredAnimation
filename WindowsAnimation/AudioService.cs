@@ -5,7 +5,7 @@ namespace TriggeredAnimation
 {
     public class AudioService
     {
-        FixedSizedQueue<float> values = new FixedSizedQueue<float>(400);
+        FixedSizedQueue<float> values = new FixedSizedQueue<float>(1000);
         public AudioService()
         {
             //int waveInDevices = WaveIn.DeviceCount;
@@ -45,7 +45,7 @@ namespace TriggeredAnimation
             {
                 sum += Math.Abs(item);
             }
-            return sum / values.Limit;
+            return (sum/values.Limit) * 300;
         }
 
         private void ProcessSample(float sample32)
