@@ -41,17 +41,22 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Animations\AnimatorRules\AnimationTransitionRule.cs" />
+    <Compile Include="Animations\Animator.cs" />
     <Compile Include="Animations\Base\AnimationChoosers\FrameChosserByScale.cs" />
     <Compile Include="Animations\Base\AnimationChoosers\FrameController.cs" />
     <Compile Include="Animations\Base\AnimationChoosers\ReverseFrameChooser.cs" />
     <Compile Include="Animations\Base\AnimationChoosers\SequentialFrameChooser.cs" />
+    <Compile Include="Animations\AnimatorRules\FlaggedAnimationTransitionRule.cs" />
+    <Compile Include="Animations\SimpleAnimation.cs" />
+    <Compile Include="Animations\AnimatorRules\TriggeredAnimationTransitionRule.cs" />
+    <Compile Include="Animations\AnimatorRules\UnFlaggedAnimationTransitionRule.cs" />
     <Compile Include="AudioService.cs" />
     <Compile Include="Content\SpriteSheet_Carolina.cs" />
     <Compile Include="FixedSizedQueue.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Animations\TextureAnimation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
