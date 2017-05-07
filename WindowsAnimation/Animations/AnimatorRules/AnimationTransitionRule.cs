@@ -1,4 +1,6 @@
-﻿namespace TriggeredAnimation
+﻿using System;
+
+namespace TriggeredAnimation
 {
     public class AnimationTransitionRule
     {

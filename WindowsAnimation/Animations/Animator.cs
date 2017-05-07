@@ -28,7 +28,6 @@ namespace TriggeredAnimation
 
         public void ActivateTrigger(string triggerName)
         {
-
             Triggers.Add(triggerName);
         }
 
@@ -88,7 +87,7 @@ namespace TriggeredAnimation
                             CurrentAnimation.Reset();
                             break;
                         }
-                    }
+                    }                    
                     else
                     {
                         if (CurrentAnimation.HasEnded)

@@ -45,7 +45,7 @@ namespace TriggeredAnimation
             {
                 sum += Math.Abs(item);
             }
-            return (sum/values.Limit) * 300;
+            return (sum/values.Limit) * 2;
         }
 
         private void ProcessSample(float sample32)
