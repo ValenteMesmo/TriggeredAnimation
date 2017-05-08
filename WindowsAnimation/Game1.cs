@@ -8,6 +8,79 @@ using WindowsAnimation;
 
 namespace TriggeredAnimation
 {
+    public class InputManager
+    {
+        public bool Y { get; private set; }
+        public bool A { get; private set; }
+        public bool B { get; private set; }
+        public bool X { get; private set; }
+
+        public bool RB { get; private set; }
+        public bool RT { get; private set; }
+
+        public bool LB { get; private set; }
+        public bool LT { get; private set; }
+
+        public bool LS { get; private set; }
+        public bool RS { get; private set; }
+
+        public bool Dpad_Up { get; private set; }
+        public bool Dpad_Down { get; private set; }
+        public bool Dpad_Left { get; private set; }
+        public bool Dpad_Right { get; private set; }
+
+        public float LS_X_Value { get; set; }
+        public float LS_Y_Value { get; set; }
+
+        public float RS_X_Value { get; set; }
+        public float RS_Y_Value { get; set; }
+
+        public void Update()
+        {
+            var gamePadState = GamePad.GetState(PlayerIndex.One);
+            var keyboardState = Keyboard.GetState();
+
+            Y = gamePadState.Buttons.Y == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.I);
+            A = gamePadState.Buttons.A == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.K);
+            B = gamePadState.Buttons.B == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.L);
+            X = gamePadState.Buttons.X == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.J);
+
+            RB = gamePadState.Buttons.RightShoulder == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.Z);
+            RT = gamePadState.Triggers.Right > 0
+                || keyboardState.IsKeyDown(Keys.X);
+
+            LB = gamePadState.Buttons.LeftShoulder == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.M);
+            LT = gamePadState.Triggers.Left > 0
+                || keyboardState.IsKeyDown(Keys.N);
+
+            LS = gamePadState.Buttons.LeftStick == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.Q);
+            RS = gamePadState.Buttons.RightStick == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.E);
+
+            Dpad_Up = gamePadState.DPad.Up == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.W);
+            Dpad_Down = gamePadState.DPad.Down == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.S);
+            Dpad_Left = gamePadState.DPad.Left == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.A);
+            Dpad_Right = gamePadState.DPad.Right == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.D);
+
+            LS_X_Value = gamePadState.ThumbSticks.Left.X;
+            LS_Y_Value = gamePadState.ThumbSticks.Left.Y;
+
+            RS_X_Value = gamePadState.ThumbSticks.Right.X;
+            RS_Y_Value = gamePadState.ThumbSticks.Right.Y;
+        }
+    }
+
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -52,6 +125,7 @@ namespace TriggeredAnimation
 
         Animator Botao_L2;
         Animator Botao_L1;
+        InputManager inputs;
 
         protected override void LoadContent()
         {
@@ -80,25 +154,27 @@ namespace TriggeredAnimation
                 , new UnFlaggedAnimationTransitionRule(Boca_triste, Boca_desentristecendo, "triste")
                 , new AnimationTransitionRule(Boca_desentristecendo, Boca_padrao)
             );
+            inputs = new InputManager();
+            var RoundButtonAnimatorFactory = new RoundButtonAnimatorFactory(inputs);
 
-            Botao_Y = RoundButtonAnimator.Create(Content, commonX + 194, commonY + 175, "w");
-            Botao_A = RoundButtonAnimator.Create(Content, commonX + 194, commonY + 220, "s");
-            Botao_B = RoundButtonAnimator.Create(Content, commonX + 224, commonY + 197, "d");
-            Botao_X = RoundButtonAnimator.Create(Content, commonX + 164, commonY + 197, "a");
+            Botao_Y = RoundButtonAnimatorFactory.Create(Content, commonX + 194, commonY + 175, f => f.Y);
+            Botao_A = RoundButtonAnimatorFactory.Create(Content, commonX + 194, commonY + 220, f => f.A);
+            Botao_B = RoundButtonAnimatorFactory.Create(Content, commonX + 224, commonY + 197, f => f.B);
+            Botao_X = RoundButtonAnimatorFactory.Create(Content, commonX + 164, commonY + 197, f => f.X);
 
-            Botao_Up = RoundButtonAnimator.Create(Content, commonX - 54 + 42, commonY + 175    +10, "up");
-            Botao_Down = RoundButtonAnimator.Create(Content, commonX - 54 + 42, commonY + 220  +10, "down");
-            Botao_Left = RoundButtonAnimator.Create(Content, commonX - 84 + 42, commonY + 197  +10, "right");
-            Botao_Right = RoundButtonAnimator.Create(Content, commonX - 24 + 42, commonY + 197 +10, "left");
+            Botao_Up = RoundButtonAnimatorFactory.Create(Content, commonX - 54 + 42, commonY + 175 + 10, f => f.Dpad_Up);
+            Botao_Down = RoundButtonAnimatorFactory.Create(Content, commonX - 54 + 42, commonY + 220 + 10, f => f.Dpad_Down);
+            Botao_Left = RoundButtonAnimatorFactory.Create(Content, commonX - 84 + 42, commonY + 197 + 10, f => f.Dpad_Left);
+            Botao_Right = RoundButtonAnimatorFactory.Create(Content, commonX - 24 + 42, commonY + 197 + 10, f => f.Dpad_Right);
 
-            Analog_L = RoundButtonAnimator.Create(Content, commonX + 50, commonY + 220, "l3");
-            Analog_R = RoundButtonAnimator.Create(Content, commonX + 110, commonY + 220, "r3");
+            Analog_L = RoundButtonAnimatorFactory.Create(Content, commonX + 50, commonY + 220, f => f.LS);
+            Analog_R = RoundButtonAnimatorFactory.Create(Content, commonX + 110, commonY + 220, f => f.RS);
 
-            Botao_R2 = RoundButtonAnimator.Create(Content, commonX + 260, commonY + 165, "r2");
-            Botao_R1 = RoundButtonAnimator.Create(Content, commonX + 261, commonY + 195, "r1");
+            Botao_R2 = RoundButtonAnimatorFactory.Create(Content, commonX + 260, commonY + 165, f => f.RT);
+            Botao_R1 = RoundButtonAnimatorFactory.Create(Content, commonX + 261, commonY + 195, f => f.RB);
 
-            Botao_L2 = RoundButtonAnimator.Create(Content, commonX + -78, commonY + 182, "l2");
-            Botao_L1 = RoundButtonAnimator.Create(Content, commonX + -77, commonY + 212, "l1");
+            Botao_L2 = RoundButtonAnimatorFactory.Create(Content, commonX + -78, commonY + 182, f => f.LT);
+            Botao_L1 = RoundButtonAnimatorFactory.Create(Content, commonX + -77, commonY + 212, f => f.LB);
 
             Corpo = SpriteSheet_Carolina.Load_Corpo(Content, commonX + 50, commonY + 50);
         }
@@ -106,50 +182,27 @@ namespace TriggeredAnimation
         protected override void UnloadContent()
         {
         }
-        GamePadState gamePadState;
-        KeyboardState keyboardState;
+
         protected override void Update(GameTime gameTime)
         {
-            gamePadState = GamePad.GetState(PlayerIndex.Two);
-            keyboardState = Keyboard.GetState();
+            inputs.Update();
 
-            Body_X.Set(gamePadState.ThumbSticks.Right.X * 5f);
-            Body_Y.Set(gamePadState.ThumbSticks.Right.Y * 5f);
+            LeftStick_X.Set(inputs.RS_X_Value * 7f);
+            LeftStick_Y.Set(-inputs.RS_Y_Value * 7f);
 
-            Hand_X.Set(gamePadState.ThumbSticks.Left.X * 3);
-            Hand_Y.Set(-gamePadState.ThumbSticks.Left.Y * 8);
+            RightStick_X.Set(inputs.LS_X_Value * 7);
+            RightStick_Y.Set(-inputs.LS_Y_Value * 7);
 
-            Eye_X.Set(
-                (gamePadState.ThumbSticks.Left.X
-                - gamePadState.ThumbSticks.Right.X)
-                * 2
-                );
-            Eye_Y.Set((
-                gamePadState.ThumbSticks.Left.Y
-                - gamePadState.ThumbSticks.Right.Y
-                ) * 2
-                );
-
-            Boca.Flag("triste",
-                gamePadState.Buttons.A == ButtonState.Pressed
-                || keyboardState.IsKeyDown(Keys.Z));
-
-            Botao_Y.Flag("w", keyboardState.IsKeyDown(Keys.W));
-            Botao_X.Flag("a", keyboardState.IsKeyDown(Keys.A));
-            Botao_B.Flag("d", keyboardState.IsKeyDown(Keys.D));
-            Botao_A.Flag("s", keyboardState.IsKeyDown(Keys.S));
+            Boca.Flag("triste", inputs.A);
 
             base.Update(gameTime);
         }
 
-        EasyValue Body_X = new EasyValue(20);
-        EasyValue Body_Y = new EasyValue(15);
+        EasyValue LeftStick_X = new EasyValue(2);
+        EasyValue LeftStick_Y = new EasyValue(2);
 
-        EasyValue Hand_X = new EasyValue(10);
-        EasyValue Hand_Y = new EasyValue(10);
-
-        EasyValue Eye_X = new EasyValue(10);
-        EasyValue Eye_Y = new EasyValue(10);
+        EasyValue RightStick_X = new EasyValue(2);
+        EasyValue RightStick_Y = new EasyValue(2);
 
         DateTime horaDePiscar;
         Random Random = new Random();
@@ -168,31 +221,31 @@ namespace TriggeredAnimation
             spriteBatch.Begin();
 
 
-            Corpo.Draw(spriteBatch, Body_X, Body_Y);
-            Transformacao.Draw(spriteBatch, Body_X, Body_Y);
+            Corpo.Draw(spriteBatch, 0, 0);
+            Transformacao.Draw(spriteBatch, 0, 0);
 
-            Boca.Draw(spriteBatch, Body_X, Body_Y);
+            Boca.Draw(spriteBatch, 0, 0);
 
-            Load_Olhos_abertos.Draw(spriteBatch, Body_X, Body_Y);
+            Load_Olhos_abertos.Draw(spriteBatch, 0, 0);
 
-            Botao_Down.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_Up.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_Left.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_Right.Draw(spriteBatch, Body_X, Body_Y);
+            Botao_Down.Draw(spriteBatch, 0, 0);
+            Botao_Up.Draw(spriteBatch, 0, 0);
+            Botao_Left.Draw(spriteBatch, 0, 0);
+            Botao_Right.Draw(spriteBatch, 0, 0);
 
-            Botao_Y.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_X.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_B.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_A.Draw(spriteBatch, Body_X, Body_Y);
+            Botao_Y.Draw(spriteBatch, 0, 0);
+            Botao_X.Draw(spriteBatch, 0, 0);
+            Botao_B.Draw(spriteBatch, 0, 0);
+            Botao_A.Draw(spriteBatch, 0, 0);
 
-            Analog_L.Draw(spriteBatch, Body_X + Random.Next(1, 10), Body_Y + Random.Next(1, 10));
-            Analog_R.Draw(spriteBatch, Body_X + Random.Next(1, 10), Body_Y + Random.Next(1, 10));
+            Analog_R.Draw(spriteBatch, LeftStick_X, LeftStick_Y);
+            Analog_L.Draw(spriteBatch, RightStick_X, RightStick_Y);
 
-            Botao_R2.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_R1.Draw(spriteBatch, Body_X, Body_Y);
+            Botao_R2.Draw(spriteBatch, 0, 0);
+            Botao_R1.Draw(spriteBatch, 0, 0);
 
-            Botao_L2.Draw(spriteBatch, Body_X, Body_Y);
-            Botao_L1.Draw(spriteBatch, Body_X, Body_Y);
+            Botao_L2.Draw(spriteBatch, 0, 0);
+            Botao_L1.Draw(spriteBatch, 0, 0);
 
             spriteBatch.End();
             base.Draw(gameTime);

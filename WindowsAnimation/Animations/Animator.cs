@@ -87,7 +87,19 @@ namespace TriggeredAnimation
                             CurrentAnimation.Reset();
                             break;
                         }
-                    }                    
+                    }                  
+                    else if (rule is AnimationTransitionRuleWithInput)
+                    {
+                        var Condition = (rule as AnimationTransitionRuleWithInput).Condition;
+
+                        if (Condition())
+                        {
+                            CurrentAnimation.Reset();
+                            CurrentAnimation = rule.Target;
+                            CurrentAnimation.Reset();
+                            break;
+                        }
+                    }
                     else
                     {
                         if (CurrentAnimation.HasEnded)
