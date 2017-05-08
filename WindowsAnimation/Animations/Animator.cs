@@ -100,7 +100,7 @@ namespace TriggeredAnimation
                             break;
                         }
                     }
-                    else
+                    else if (rule is AnimationTransitionRule)
                     {
                         if (CurrentAnimation.HasEnded)
                         {
